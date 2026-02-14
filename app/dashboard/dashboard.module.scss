@@ -1,0 +1,619 @@
+/* ============================================
+   用户中心 - Dashboard
+============================================ */
+
+.loadingPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.dashboardPage {
+  min-height: 100vh;
+  background: var(--bg-secondary);
+}
+
+/* 顶部导航 */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.5rem;
+  background: white;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--primary);
+  }
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.adminLink {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: var(--primary);
+    color: white;
+  }
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: #ef4444;
+  }
+}
+
+/* 内容容器 */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* 用户资料卡 */
+.profileCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1rem;
+}
+
+.profileAvatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.profileInfo {
+  flex: 1;
+  min-width: 0;
+
+  h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.profileSub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.pointsBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #eff6ff;
+  border-radius: 10px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.pointsNumber {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.pointsLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* 快捷操作 */
+.quickActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+}
+
+.inviteTip {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #10b981;
+  margin-left: auto;
+}
+
+/* 积分记录 */
+.historySection {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+}
+
+.emptyText {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--bg-secondary);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.historyLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.historyType {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.historyDesc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.historyRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+}
+
+.historyAmount {
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  &.positive { color: #10b981; }
+  &.negative { color: #ef4444; }
+}
+
+.historyDate {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* 提示消息 */
+.toast {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+
+  &.success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #16a34a;
+  }
+
+  &.error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+  }
+}
+
+/* 工具区域 */
+.toolsSection {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.toolsHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+}
+
+.toolsDesc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0.4rem 0 1.25rem;
+}
+
+.toolsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.toolCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-sm);
+  }
+
+  &.coming {
+    opacity: 0.6;
+  }
+}
+
+.toolIcon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+}
+
+.toolInfo {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.15rem;
+  }
+
+  p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.toolFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.toolCost {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.useBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: white;
+  background: var(--primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: var(--primary-dark);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.disabled {
+    background: var(--text-muted);
+  }
+}
+
+.btnSpinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.comingBadge {
+  font-size: 0.75rem;
+  color: #f59e0b;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: #fffbeb;
+  border-radius: 4px;
+}
+
+.emptyTools {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--text-muted);
+}
+
+/* 激活码区域 */
+.activateSection {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1rem;
+}
+
+.activateRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.activateInput {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  font-family: monospace;
+  letter-spacing: 1px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  text-transform: uppercase;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  &::placeholder {
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--font-sans);
+  }
+}
+
+.activateBtn {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  background: #10b981;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: background var(--transition-fast);
+
+  &:hover:not(:disabled) {
+    background: #059669;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.activatedList {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.activatedItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--bg-secondary);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.activatedIcon {
+  font-size: 1.2rem;
+}
+
+.activatedName {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.downloadBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: white;
+  background: var(--primary);
+  border-radius: 6px;
+  transition: background var(--transition-fast);
+
+  &:hover {
+    background: var(--primary-dark);
+  }
+}
+
+.downloadSmBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: var(--primary);
+  background: #eff6ff;
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: var(--primary);
+    color: white;
+  }
+}
+
+.activatedDate {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .profileCard {
+    flex-wrap: wrap;
+    padding: 1.25rem;
+  }
+
+  .pointsBadge {
+    margin-left: auto;
+  }
+
+  .inviteTip {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0.25rem;
+  }
+
+  .toolCard {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .toolInfo p {
+    white-space: normal;
+  }
+
+  .toolFooter {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

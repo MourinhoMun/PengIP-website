@@ -1,0 +1,112 @@
+// Prisma Schema - 鹏哥个人品牌网站数据库模型
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// 用户模型
+model User {
+  id            String    @id @default(cuid())
+  email         String?   @unique
+  phone         String?   @unique
+  password      String
+  name          String?
+  avatar        String?
+  points        Int       @default(100) // 注册送100积分
+  role          String    @default("user") // user | admin
+  inviteCode    String    @unique @default(cuid()) // 邀请码
+  invitedBy     String?   // 邀请人ID
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // 关联
+  pointTransactions PointTransaction[]
+  toolUsages        ToolUsage[]
+  invitedUsers      User[]            @relation("Invitations")
+  inviter           User?             @relation("Invitations", fields: [invitedBy], references: [id])
+
+  @@index([email])
+  @@index([phone])
+  @@index([inviteCode])
+}
+
+// AI工具模型
+model Tool {
+  id            String      @id @default(cuid())
+  name          String
+  nameEn        String?
+  description   String
+  descriptionEn String?
+  icon          String?
+  points        Int         @default(5) // 使用消耗积分
+  url           String?     // 工具跳转链接
+  downloadUrl   String?     // 下载地址（百度网盘等）
+  status        String      @default("active") // active | inactive | coming
+  sortOrder     Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // 关联
+  usages          ToolUsage[]
+  activationCodes ActivationCode[]
+
+  @@index([status])
+}
+
+// 激活码模型
+model ActivationCode {
+  id        String    @id @default(cuid())
+  code      String    @unique // 激活码
+  toolId    String    // 对应工具
+  userId    String?   // 分配给的用户（null 表示未分配）
+  status    String    @default("unused") // unused | assigned | used | expired
+  note      String?   // 备注（管理员可写）
+  createdAt DateTime  @default(now())
+  usedAt    DateTime? // 使用时间
+
+  // 关联
+  tool      Tool      @relation(fields: [toolId], references: [id])
+
+  @@index([code])
+  @@index([toolId])
+  @@index([userId])
+  @@index([status])
+}
+
+// 工具使用记录
+model ToolUsage {
+  id        String   @id @default(cuid())
+  userId    String
+  toolId    String
+  points    Int      // 消耗的积分
+  createdAt DateTime @default(now())
+
+  // 关联
+  user      User     @relation(fields: [userId], references: [id])
+  tool      Tool     @relation(fields: [toolId], references: [id])
+
+  @@index([userId])
+  @@index([toolId])
+}
+
+// 积分交易记录
+model PointTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  amount      Int      // 正数为增加，负数为扣除
+  type        String   // register | invite | invited | use_tool | recharge | admin_adjust
+  description String?
+  relatedId   String?  // 关联的工具ID或用户ID
+  createdAt   DateTime @default(now())
+
+  // 关联
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+}

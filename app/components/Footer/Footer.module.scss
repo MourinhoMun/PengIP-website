@@ -1,0 +1,275 @@
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.cta {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.ctaTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.highlight {
+  color: var(--primary);
+}
+
+.ctaSubtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: white;
+  background: var(--primary);
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: var(--primary-dark);
+    color: white;
+  }
+}
+
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    border-color: var(--border-color-hover);
+    color: var(--text-primary);
+  }
+}
+
+.divider {
+  height: 1px;
+  background: var(--border-color);
+}
+
+.bottom {
+  padding: 3rem 0 1.5rem;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1fr;
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.brand {
+  @media (max-width: 900px) {
+    grid-column: span 2;
+  }
+
+  @media (max-width: 600px) {
+    grid-column: span 1;
+  }
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.logoText {
+  color: var(--primary);
+}
+
+.brandDescription {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 280px;
+}
+
+.linksTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.linksList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.link {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--primary);
+  }
+}
+
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  transition: color var(--transition-fast);
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  &:hover {
+    color: var(--primary);
+  }
+}
+
+.redNoteIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.contactLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.contactValue {
+  font-size: 0.875rem;
+}
+
+.redNoteLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--primary);
+  margin-left: 1.5rem;
+  margin-top: 0.25rem;
+  transition: gap var(--transition-fast);
+
+  &:hover {
+    gap: 0.5rem;
+  }
+}
+
+.qrcodeBox {
+  margin-bottom: 0.5rem;
+}
+
+.qrcodeImage {
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.qrcodeHint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.copyright {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      color: var(--text-secondary);
+
+      svg {
+        width: 10px;
+        height: 10px;
+      }
+
+      &:hover {
+        color: var(--primary);
+      }
+    }
+  }
+}
+
+.madeWith {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.heart {
+  color: #ef4444;
+  width: 12px;
+  height: 12px;
+}
