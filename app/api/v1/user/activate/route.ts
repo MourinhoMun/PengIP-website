@@ -117,8 +117,8 @@ export async function POST(request: NextRequest) {
             success: true,
             token,
             user: {
-                userId: user.id,
-                balance: user.points, // Transaction updated this logic already
+                userId: (user as any).id,
+                balance: (user as any).points, // Transaction updated this logic already
             },
         });
 
