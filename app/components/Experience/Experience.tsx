@@ -42,7 +42,7 @@ export default function Experience() {
 
             return (
               <motion.div
-                key={exp.year + exp.title}
+                key={exp.year + exp.company}
                 className={`${styles.timelineItem} ${isLeft ? styles.left : styles.right}`}
                 initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
