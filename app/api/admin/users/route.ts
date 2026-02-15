@@ -29,12 +29,12 @@ export async function GET(request: NextRequest) {
 
     const where = search
       ? {
-          OR: [
-            { email: { contains: search } },
-            { phone: { contains: search } },
-            { name: { contains: search } },
-          ],
-        }
+        OR: [
+          { email: { contains: search } },
+          { phone: { contains: search } },
+          { name: { contains: search } },
+        ],
+      }
       : {};
 
     const [users, total] = await Promise.all([
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
           createdAt: true,
           _count: {
             select: {
-              invitedUsers: true,
+
               toolUsages: true,
             },
           },
