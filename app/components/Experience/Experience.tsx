@@ -61,9 +61,9 @@ export default function Experience() {
                   <span className={styles.year} style={{ color }}>
                     {exp.year}
                   </span>
-                  <h3 className={styles.cardTitle}>{exp.title}</h3>
-                  <span className={styles.cardSubtitle}>{exp.subtitle}</span>
-                  <p className={styles.cardDescription}>{exp.description}</p>
+                  <h3 className={styles.cardTitle}>{exp.company}</h3>
+                  <span className={styles.cardSubtitle}>{exp.role}</span>
+                  <p className={styles.cardDescription}>{exp.desc}</p>
                 </div>
               </motion.div>
             );
