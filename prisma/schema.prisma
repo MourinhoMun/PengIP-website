@@ -15,6 +15,7 @@ model User {
   email         String?   @unique
   phone         String?   @unique
   password      String
+  deviceId      String?   @unique // 绑定设备ID
   name          String?
   avatar        String?
   points        Int       @default(100) // 注册送100积分
@@ -27,12 +28,13 @@ model User {
   // 关联
   pointTransactions PointTransaction[]
   toolUsages        ToolUsage[]
-  invitedUsers      User[]            @relation("Invitations")
-  inviter           User?             @relation("Invitations", fields: [invitedBy], references: [id])
+  // 关联
+
 
   @@index([email])
   @@index([phone])
   @@index([inviteCode])
+  @@index([deviceId]) // Index for device lookups
 }
 
 // AI工具模型
@@ -62,15 +64,18 @@ model Tool {
 model ActivationCode {
   id        String    @id @default(cuid())
   code      String    @unique // 激活码
-  toolId    String    // 对应工具
-  userId    String?   // 分配给的用户（null 表示未分配）
+  type      String    @default("tool_activation") // tool_activation | license | recharge
+  points    Int       @default(0) // 包含的积分
+  toolId    String?   // 对应工具 (Optional for license/recharge codes)
+  userId    String?   // 分配给的用户
+  deviceId  String?   // 绑定的设备ID
   status    String    @default("unused") // unused | assigned | used | expired
-  note      String?   // 备注（管理员可写）
+  note      String?   // 备注
   createdAt DateTime  @default(now())
   usedAt    DateTime? // 使用时间
 
   // 关联
-  tool      Tool      @relation(fields: [toolId], references: [id])
+  tool      Tool?     @relation(fields: [toolId], references: [id]) // Made optional
 
   @@index([code])
   @@index([toolId])
