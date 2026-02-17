@@ -62,17 +62,20 @@ model Tool {
 
 // 激活码模型
 model ActivationCode {
-  id        String    @id @default(cuid())
-  code      String    @unique // 激活码
-  type      String    @default("tool_activation") // tool_activation | license | recharge
-  points    Int       @default(0) // 包含的积分
-  toolId    String?   // 对应工具 (Optional for license/recharge codes)
-  userId    String?   // 分配给的用户
-  deviceId  String?   // 绑定的设备ID
-  status    String    @default("unused") // unused | assigned | used | expired
-  note      String?   // 备注
-  createdAt DateTime  @default(now())
-  usedAt    DateTime? // 使用时间
+  id          String    @id @default(cuid())
+  code        String    @unique // 激活码
+  type        String    @default("tool_activation") // tool_activation | license | recharge
+  points      Int       @default(0) // 包含的积分
+  toolId      String?   // 对应工具 (Optional for license/recharge codes)
+  userId      String?   // 分配给的用户
+  deviceId    String?   // 绑定的设备ID（兼容旧逻辑）
+  maxUses     Int       @default(3) // 最大可激活设备数
+  usedCount   Int       @default(0) // 已激活设备数
+  usedDevices String?   // 已激活的设备ID列表，JSON数组格式 如 ["deviceA","deviceB"]
+  status      String    @default("unused") // unused | active | used | assigned | expired
+  note        String?   // 备注
+  createdAt   DateTime  @default(now())
+  usedAt      DateTime? // 最后一次使用时间
 
   // 关联
   tool      Tool?     @relation(fields: [toolId], references: [id]) // Made optional

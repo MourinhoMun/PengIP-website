@@ -38,6 +38,14 @@ export async function POST(
       );
     }
 
+    // 扣减时检查是否会变负数
+    if (amount < 0 && user.points + amount < 0) {
+      return NextResponse.json(
+        { error: `积分不足，当前积分 ${user.points}，无法扣除 ${Math.abs(amount)}` },
+        { status: 400 }
+      );
+    }
+
     // 更新积分
     const updatedUser = await prisma.user.update({
       where: { id },

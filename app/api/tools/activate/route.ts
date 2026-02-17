@@ -17,55 +17,62 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '请输入激活码' }, { status: 400 });
     }
 
-    // 标准化激活码格式
     const normalizedCode = code.trim().toUpperCase();
 
-    // 查找激活码
-    const activation = await prisma.activationCode.findFirst({
-      where: {
-        code: normalizedCode,
-      },
-      include: {
-        tool: {
-          select: { name: true, id: true },
+    // 使用事务：原子性地查找 + 校验 + 更新激活码
+    const result = await prisma.$transaction(async (tx) => {
+      const activation = await tx.activationCode.findFirst({
+        where: { code: normalizedCode },
+        include: {
+          tool: { select: { name: true, id: true } },
         },
-      },
-    });
+      });
 
-    if (!activation) {
-      return NextResponse.json({ error: '激活码不存在' }, { status: 404 });
-    }
+      if (!activation) {
+        throw new Error('NOT_FOUND');
+      }
 
-    if (activation.status === 'used') {
-      return NextResponse.json({ error: '该激活码已被使用' }, { status: 400 });
-    }
+      if (activation.status === 'used') {
+        throw new Error('ALREADY_USED');
+      }
 
-    if (activation.status === 'expired') {
-      return NextResponse.json({ error: '该激活码已过期' }, { status: 400 });
-    }
+      if (activation.status === 'expired') {
+        throw new Error('EXPIRED');
+      }
 
-    // 如果激活码已分配给特定用户，检查是否匹配
-    if (activation.userId && activation.userId !== currentUser.userId) {
-      return NextResponse.json({ error: '该激活码不属于你' }, { status: 403 });
-    }
+      if (activation.userId && activation.userId !== currentUser.userId) {
+        throw new Error('NOT_YOURS');
+      }
 
-    // 激活
-    await prisma.activationCode.update({
-      where: { id: activation.id },
-      data: {
-        status: 'used',
-        userId: currentUser.userId,
-        usedAt: new Date(),
-      },
+      await tx.activationCode.update({
+        where: { id: activation.id },
+        data: {
+          status: 'used',
+          userId: currentUser.userId,
+          usedAt: new Date(),
+        },
+      });
+
+      return activation;
     });
 
     return NextResponse.json({
       success: true,
-      toolName: activation.tool?.name || '未知工具',
-      toolId: activation.tool?.id || '',
-      message: `已成功激活「${activation.tool?.name || '工具'}」`,
+      toolName: result.tool?.name || '未知工具',
+      toolId: result.tool?.id || '',
+      message: `已成功激活「${result.tool?.name || '工具'}」`,
     });
-  } catch (error) {
+  } catch (error: any) {
+    const errorMap: Record<string, { error: string; status: number }> = {
+      NOT_FOUND: { error: '激活码不存在', status: 404 },
+      ALREADY_USED: { error: '该激活码已被使用', status: 400 },
+      EXPIRED: { error: '该激活码已过期', status: 400 },
+      NOT_YOURS: { error: '该激活码不属于你', status: 403 },
+    };
+    const mapped = errorMap[error.message];
+    if (mapped) {
+      return NextResponse.json({ error: mapped.error }, { status: mapped.status });
+    }
     console.error('Activate error:', error);
     return NextResponse.json({ error: '激活失败，请稍后重试' }, { status: 500 });
   }

@@ -193,6 +193,18 @@ export default function ToolsPage() {
     setTimeout(() => setCopiedCode(null), 1500);
   };
 
+  const exportUnusedAsTxt = () => {
+    const unusedCodes = codes.filter(c => c.status === 'unused').map(c => c.code).join('\n');
+    if (!unusedCodes) { alert('没有未使用的激活码'); return; }
+    const blob = new Blob([unusedCodes], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${codesToolName}_激活码_${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm('确定要删除这个工具吗？')) return;
 
@@ -396,6 +408,9 @@ export default function ToolsPage() {
               </select>
               <button onClick={copyAllUnused} className={`${styles.btn} ${styles.btnSecondary}`} style={{ fontSize: '0.8rem' }}>
                 {copiedCode === 'all' ? <><Check size={14} /> 已复制</> : <><Copy size={14} /> 复制全部未使用</>}
+              </button>
+              <button onClick={exportUnusedAsTxt} className={`${styles.btn} ${styles.btnSecondary}`} style={{ fontSize: '0.8rem' }}>
+                <Download size={14} /> 导出TXT
               </button>
             </div>
 

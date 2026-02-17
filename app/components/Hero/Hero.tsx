@@ -26,6 +26,7 @@ export default function Hero() {
         >
           {/* 头像 */}
           <motion.div
+            key="avatar"
             className={styles.avatarWrapper}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -43,6 +44,7 @@ export default function Hero() {
 
           {/* 标签 */}
           <motion.div
+            key="badge"
             className={styles.badge}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -53,6 +55,7 @@ export default function Hero() {
 
           {/* 主标题 */}
           <motion.h1
+            key="title"
             className={styles.title}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -62,6 +65,7 @@ export default function Hero() {
           </motion.h1>
 
           <motion.h2
+            key="subtitle"
             className={styles.subtitle}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,6 +76,7 @@ export default function Hero() {
 
           {/* 描述 */}
           <motion.p
+            key="description"
             className={styles.description}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -84,6 +89,7 @@ export default function Hero() {
 
           {/* CTA 按钮 */}
           <motion.div
+            key="cta"
             className={styles.ctaButtons}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
 import { verify } from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-it';
+const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
 
 export async function GET(request: NextRequest) {
     try {

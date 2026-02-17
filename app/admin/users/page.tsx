@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search, Plus, Minus } from 'lucide-react';
+import { Search, Plus, Minus, X, UserPlus } from 'lucide-react';
 import styles from '../admin.module.scss';
 
 interface User {
@@ -33,6 +33,10 @@ export default function UsersPage() {
   const [search, setSearch] = useState('');
   const [adjustUserId, setAdjustUserId] = useState<string | null>(null);
   const [adjustAmount, setAdjustAmount] = useState('');
+  // 新增用户
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [createForm, setCreateForm] = useState({ email: '', phone: '', name: '', password: '', points: 100, role: 'user' });
+  const [createError, setCreateError] = useState('');
 
   useEffect(() => {
     fetchUsers(1);
@@ -83,6 +87,39 @@ export default function UsersPage() {
     }
   };
 
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreateError('');
+
+    if (!createForm.email && !createForm.phone) {
+      setCreateError('请填写邮箱或手机号');
+      return;
+    }
+    if (!createForm.password || createForm.password.length < 6) {
+      setCreateError('密码至少6位');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(createForm),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setShowCreateForm(false);
+        setCreateForm({ email: '', phone: '', name: '', password: '', points: 100, role: 'user' });
+        fetchUsers(1);
+      } else {
+        setCreateError(data.error || '创建失败');
+      }
+    } catch {
+      setCreateError('创建失败，请稍后重试');
+    }
+  };
+
   return (
     <div>
       <div className={styles.pageHeader}>
@@ -93,19 +130,27 @@ export default function UsersPage() {
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <h2>用户列表</h2>
-          <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem' }}>
-            <input
-              type="text"
-              placeholder="搜索邮箱/手机号"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className={styles.input}
-              style={{ width: '200px' }}
-            />
-            <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
-              <Search size={16} />
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem' }}>
+              <input
+                type="text"
+                placeholder="搜索邮箱/手机号"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className={styles.input}
+                style={{ width: '200px' }}
+              />
+              <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
+                <Search size={16} />
+              </button>
+            </form>
+            <button
+              onClick={() => setShowCreateForm(true)}
+              className={`${styles.btn} ${styles.btnPrimary}`}
+            >
+              <UserPlus size={16} /> 新增用户
             </button>
-          </form>
+          </div>
         </div>
 
         {loading ? (
@@ -222,6 +267,110 @@ export default function UsersPage() {
           </>
         )}
       </div>
+
+      {/* 新增用户弹窗 */}
+      {showCreateForm && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 200, padding: '1rem',
+        }}>
+          <div style={{
+            background: 'white', borderRadius: '12px', padding: '1.5rem',
+            width: '100%', maxWidth: '450px',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>
+                <UserPlus size={18} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
+                新增用户
+              </h2>
+              <button onClick={() => { setShowCreateForm(false); setCreateError(''); }} style={{ padding: '0.25rem' }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            {createError && (
+              <div style={{ padding: '0.5rem 0.75rem', background: '#fef2f2', color: '#dc2626', borderRadius: '6px', fontSize: '0.85rem', marginBottom: '0.75rem' }}>
+                {createError}
+              </div>
+            )}
+
+            <form onSubmit={handleCreateUser}>
+              <div className={styles.formGroup}>
+                <label>邮箱</label>
+                <input
+                  type="email"
+                  value={createForm.email}
+                  onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
+                  className={styles.input}
+                  placeholder="选填，邮箱和手机号至少填一个"
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>手机号</label>
+                <input
+                  type="text"
+                  value={createForm.phone}
+                  onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
+                  className={styles.input}
+                  placeholder="选填"
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>昵称</label>
+                <input
+                  type="text"
+                  value={createForm.name}
+                  onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
+                  className={styles.input}
+                  placeholder="选填"
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>密码 *</label>
+                <input
+                  type="text"
+                  value={createForm.password}
+                  onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
+                  className={styles.input}
+                  placeholder="至少6位"
+                  required
+                />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className={styles.formGroup}>
+                  <label>初始积分</label>
+                  <input
+                    type="number"
+                    value={createForm.points}
+                    onChange={(e) => setCreateForm({ ...createForm, points: parseInt(e.target.value) || 0 })}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>角色</label>
+                  <select
+                    value={createForm.role}
+                    onChange={(e) => setCreateForm({ ...createForm, role: e.target.value })}
+                    className={styles.input}
+                  >
+                    <option value="user">普通用户</option>
+                    <option value="admin">管理员</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
+                <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} style={{ flex: 1 }}>
+                  创建用户
+                </button>
+                <button type="button" onClick={() => { setShowCreateForm(false); setCreateError(''); }} className={`${styles.btn} ${styles.btnSecondary}`}>
+                  取消
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

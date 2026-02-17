@@ -60,17 +60,19 @@ export default function Services() {
 
                 {/* 内容 */}
                 <h3 className={styles.cardTitle}>{service.title}</h3>
-                <p className={styles.cardDescription}>{service.description}</p>
+                <p className={styles.cardDescription}>{(service as any).description || (service as any).desc}</p>
 
                 {/* 特性列表 */}
-                <ul className={styles.features}>
-                  {service.features.map((feature) => (
-                    <li key={feature} className={styles.featureItem}>
-                      <Check size={16} style={{ color }} />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                {(service as any).features && (
+                  <ul className={styles.features}>
+                    {(service as any).features.map((feature: string) => (
+                      <li key={feature} className={styles.featureItem}>
+                        <Check size={16} style={{ color }} />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
                 {/* 了解更多 */}
                 <a

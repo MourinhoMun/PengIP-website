@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { toolId } = body;
 
-    if (!toolId) {
+    if (!toolId || typeof toolId !== 'string') {
       return NextResponse.json(
         { error: '请指定工具' },
         { status: 400 }
@@ -43,62 +43,60 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 获取用户信息
-    const user = await prisma.user.findUnique({
-      where: { id: currentUser.userId },
-    });
+    // 使用事务：原子性地检查余额 + 扣费 + 记录
+    const result = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.findUnique({
+        where: { id: currentUser.userId },
+      });
 
-    if (!user) {
-      return NextResponse.json(
-        { error: '用户不存在' },
-        { status: 404 }
-      );
-    }
+      if (!user) {
+        throw new Error('USER_NOT_FOUND');
+      }
 
-    // 检查积分是否足够
-    if (user.points < tool.points) {
-      return NextResponse.json(
-        { 
-          error: '积分不足',
-          needPoints: tool.points,
-          currentPoints: user.points,
+      if (user.points < tool.points) {
+        throw new Error('INSUFFICIENT_POINTS');
+      }
+
+      const updatedUser = await tx.user.update({
+        where: { id: user.id },
+        data: { points: { decrement: tool.points } },
+      });
+
+      // 记录使用
+      await tx.toolUsage.create({
+        data: {
+          userId: user.id,
+          toolId: tool.id,
+          points: tool.points,
         },
-        { status: 400 }
-      );
-    }
+      });
 
-    // 扣除积分
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { points: { decrement: tool.points } },
-    });
+      // 记录积分交易
+      await tx.pointTransaction.create({
+        data: {
+          userId: user.id,
+          amount: -tool.points,
+          type: 'use_tool',
+          description: `使用工具: ${tool.name}`,
+          relatedId: tool.id,
+        },
+      });
 
-    // 记录使用
-    await prisma.toolUsage.create({
-      data: {
-        userId: user.id,
-        toolId: tool.id,
-        points: tool.points,
-      },
-    });
-
-    // 记录积分交易
-    await prisma.pointTransaction.create({
-      data: {
-        userId: user.id,
-        amount: -tool.points,
-        type: 'use_tool',
-        description: `使用工具: ${tool.name}`,
-        relatedId: tool.id,
-      },
+      return updatedUser;
     });
 
     return NextResponse.json({
       success: true,
-      remainingPoints: user.points - tool.points,
+      remainingPoints: result.points,
       toolUrl: tool.url,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'USER_NOT_FOUND') {
+      return NextResponse.json({ error: '用户不存在' }, { status: 404 });
+    }
+    if (error.message === 'INSUFFICIENT_POINTS') {
+      return NextResponse.json({ error: '积分不足' }, { status: 400 });
+    }
     console.error('Use tool error:', error);
     return NextResponse.json(
       { error: '使用工具失败' },
