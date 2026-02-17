@@ -36,10 +36,11 @@ const existingAdmin = db.prepare('SELECT id FROM "User" WHERE email = ?').get('a
 if (!existingAdmin) {
   const adminId = genId();
   const inviteCode = genId();
+  const now = new Date().toISOString();
   db.prepare(`
-    INSERT INTO "User" (id, email, password, name, points, role, inviteCode)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `).run(adminId, 'admin@pengip.com', hashPassword('admin123'), '管理员', 9999, 'admin', inviteCode);
+    INSERT INTO "User" (id, email, password, name, points, role, inviteCode, createdAt, updatedAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(adminId, 'admin@pengip.com', hashPassword('admin123'), '管理员', 9999, 'admin', inviteCode, now, now);
   console.log('✅ 创建管理员: admin@pengip.com / admin123');
 } else {
   // 如果已存在，强制更新密码以修复哈希算法不匹配的问题
@@ -56,10 +57,11 @@ if (existingTools.count === 0) {
     { name: 'AI病历生成器', nameEn: 'AI Medical Record Generator', desc: '智能生成规范化病历', descEn: 'Smart medical record generation', icon: '📋', points: 8 },
   ];
   for (const t of tools) {
+    const now = new Date().toISOString();
     db.prepare(`
-      INSERT INTO "Tool" (id, name, nameEn, description, descriptionEn, icon, points, status, sortOrder)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?)
-    `).run(genId(), t.name, t.nameEn, t.desc, t.descEn, t.icon, t.points, 0);
+      INSERT INTO "Tool" (id, name, nameEn, description, descriptionEn, icon, points, status, sortOrder, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)
+    `).run(genId(), t.name, t.nameEn, t.desc, t.descEn, t.icon, t.points, 0, now, now);
   }
   console.log('✅ 创建示例工具 x3');
 } else {
