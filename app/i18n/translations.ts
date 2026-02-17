@@ -13,11 +13,16 @@ export interface Translations {
   };
   hero: {
     badge: string;
+    greeting: string;
     title: string;
     description: string;
     description2: string;
     cta: string;
     ctaSecondary: string;
+    contactMe: string;
+    tryAI: string;
+    myStory: string;
+    scrollDown: string;
     stats: {
       years: string;
       value: string;
@@ -39,7 +44,9 @@ export interface Translations {
   };
   services: {
     title: string;
+    titleHighlight: string;
     subtitle: string;
+    learnMore: string;
     items: {
       title: string;
       desc: string;
@@ -102,11 +109,16 @@ export const translations: Record<Language, Translations> = {
     },
     hero: {
       badge: '专注IP流量运营和AI工具开发',
+      greeting: '你好，我是',
       title: '你好，我是 鹏哥',
       description: '医生IP运营者和AI工具开发者',
       description2: '10年医疗行业深耕，从医药销售到AI创业。实现长期主义IP的流量变现与价值提升。',
       cta: '联系我',
       ctaSecondary: '了解我的故事',
+      contactMe: '联系我',
+      tryAI: '试用AI工具',
+      myStory: '我的故事',
+      scrollDown: '向下滚动',
       stats: {
         years: '10+年 行业经验',
         value: '百万级 IP变现',
@@ -166,7 +178,9 @@ export const translations: Record<Language, Translations> = {
     },
     services: {
       title: '我的服务',
+      titleHighlight: '',
       subtitle: '从流量获取到私域变现的全链路解决方案',
+      learnMore: '了解更多',
       items: [
         {
           title: 'IP代运营',
@@ -233,11 +247,16 @@ export const translations: Record<Language, Translations> = {
     },
     hero: {
       badge: 'Focus on IP Traffic & AI Tools',
+      greeting: 'Hi, I am',
       title: 'Hi, I am Peng Ge',
       description: 'Doctor IP Operator & AI Developer',
       description2: '10 years in medical industry, from sales to AI startup. Realizing long-term IP value and monetization.',
       cta: 'Contact Me',
       ctaSecondary: 'My Story',
+      contactMe: 'Contact Me',
+      tryAI: 'Try AI Tools',
+      myStory: 'My Story',
+      scrollDown: 'Scroll Down',
       stats: {
         years: '10+ Years Exp',
         value: 'Million+ Revenue',
@@ -297,7 +316,9 @@ export const translations: Record<Language, Translations> = {
     },
     services: {
       title: 'Services',
+      titleHighlight: '',
       subtitle: 'Full-link solutions from traffic acquisition to monetization',
+      learnMore: 'Learn More',
       items: [
         {
           title: 'IP Operation',
