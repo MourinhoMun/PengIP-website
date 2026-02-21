@@ -41,6 +41,7 @@ export async function PUT(
         downloadUrl: body.downloadUrl,
         status: body.status,
         sortOrder: body.sortOrder,
+        visible: body.visible !== undefined ? body.visible : undefined,
       },
     });
 

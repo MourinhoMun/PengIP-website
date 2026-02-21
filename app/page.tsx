@@ -4,7 +4,7 @@ import { Navbar, Hero, Experience, Services, Tools, Footer } from './components'
 
 export default async function Home() {
   const tools = await prisma.tool.findMany({
-    where: { status: { in: ['active', 'coming'] } },
+    where: { status: { in: ['active', 'coming'] }, visible: true },
     orderBy: { sortOrder: 'asc' },
     select: {
       id: true,

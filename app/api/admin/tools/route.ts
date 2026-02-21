@@ -74,6 +74,7 @@ export async function POST(request: NextRequest) {
         downloadUrl: downloadUrl || null,
         status: status || 'active',
         sortOrder: sortOrder || 0,
+        visible: body.visible !== undefined ? body.visible : true,
       },
     });
 
