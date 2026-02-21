@@ -142,7 +142,7 @@ export default function DashboardPage() {
         setMessage({ type: 'success', text: `已使用「${tool.name}」，消耗 ${tool.points} 积分` });
         await refreshUser();
         if (data.toolUrl) {
-          window.open(data.toolUrl, '_blank');
+          window.location.href = data.toolUrl;
         }
       } else {
         setMessage({ type: 'error', text: data.error || '使用失败' });
@@ -363,6 +363,7 @@ export default function DashboardPage() {
               const isUsing = usingTool === tool.id;
               const canAfford = user.points >= tool.points;
               const isComing = tool.status === 'coming';
+              const isActivated = activations.some(a => a.tool.id === tool.id);
 
               return (
                 <div key={tool.id} className={`${styles.toolCard} ${isComing ? styles.coming : ''}`}>
@@ -374,28 +375,27 @@ export default function DashboardPage() {
                   <div className={styles.toolFooter}>
                     <span className={styles.toolCost}>
                       <Coins size={14} />
-                      {tool.points} {lang === 'zh' ? '积分' : 'pts'}
+                      {isActivated ? (lang === 'zh' ? '已激活' : 'Activated') : `${tool.points} ${lang === 'zh' ? '积分' : 'pts'}`}
                     </span>
                     <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
-                      {tool.downloadUrl && (
-                        activations.some(a => a.tool.id === tool.id) ? (
-                          <a
-                            href={tool.downloadUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.downloadSmBtn}
-                            title={lang === 'zh' ? '下载' : 'Download'}
-                          >
-                            <Download size={14} />
-                          </a>
-                        ) : (
-                          <span className={styles.wechatTip}>
-                            {lang === 'zh' ? '激活码请加微信：peng_ip' : 'Get code: WeChat peng_ip'}
-                          </span>
-                        )
+                      {tool.downloadUrl && isActivated && (
+                        <a
+                          href={tool.downloadUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.downloadSmBtn}
+                          title={lang === 'zh' ? '下载' : 'Download'}
+                        >
+                          <Download size={14} />
+                        </a>
                       )}
                       {isComing ? (
                         <span className={styles.comingBadge}>{lang === 'zh' ? '即将上线' : 'Coming'}</span>
+                      ) : isActivated && tool.url ? (
+                        <a href={tool.url} className={styles.useBtn}>
+                          <ExternalLink size={14} />
+                          {lang === 'zh' ? '进入工具' : 'Open'}
+                        </a>
                       ) : (
                         <button
                           className={`${styles.useBtn} ${!canAfford ? styles.disabled : ''}`}
