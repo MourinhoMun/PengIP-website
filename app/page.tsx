@@ -15,6 +15,8 @@ export default async function Home() {
       points: true,
       icon: true,
       status: true,
+      url: true,
+      tutorialUrl: true,
     },
   });
 
