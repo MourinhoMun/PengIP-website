@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, X, Key, Copy, Check, Download } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Key, Copy, Check, Download, Eye, EyeOff } from 'lucide-react';
 import styles from '../admin.module.scss';
 
 interface Tool {
@@ -16,6 +16,7 @@ interface Tool {
   downloadUrl: string | null;
   status: string;
   sortOrder: number;
+  visible: boolean;
   _count: {
     usages: number;
   };
@@ -50,6 +51,7 @@ const defaultTool = {
   downloadUrl: '',
   status: 'active',
   sortOrder: 0,
+  visible: true,
 };
 
 export default function ToolsPage() {
@@ -89,7 +91,7 @@ export default function ToolsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const url = editingId ? `/api/admin/tools/${editingId}` : '/api/admin/tools';
       const method = editingId ? 'PUT' : 'POST';
@@ -123,6 +125,7 @@ export default function ToolsPage() {
       downloadUrl: tool.downloadUrl || '',
       status: tool.status,
       sortOrder: tool.sortOrder,
+      visible: tool.visible,
     });
     setEditingId(tool.id);
     setShowForm(true);
@@ -258,13 +261,14 @@ export default function ToolsPage() {
                   <th>积分</th>
                   <th>使用次数</th>
                   <th>状态</th>
+                  <th>首页显示</th>
                   <th>排序</th>
                   <th>操作</th>
                 </tr>
               </thead>
               <tbody>
                 {tools.map((tool) => (
-                  <tr key={tool.id}>
+                  <tr key={tool.id} style={{ opacity: tool.visible ? 1 : 0.6 }}>
                     <td>
                       <div>
                         <div style={{ fontWeight: 500 }}>{tool.name}</div>
@@ -290,6 +294,13 @@ export default function ToolsPage() {
                         {tool.status === 'active' ? '上线' :
                          tool.status === 'coming' ? '即将上线' : '下线'}
                       </span>
+                    </td>
+                    <td>
+                      {tool.visible ? (
+                        <Eye size={16} style={{ color: '#16a34a' }} />
+                      ) : (
+                        <EyeOff size={16} style={{ color: '#94a3b8' }} />
+                      )}
                     </td>
                     <td>{tool.sortOrder}</td>
                     <td>
@@ -611,17 +622,38 @@ export default function ToolsPage() {
                 />
               </div>
 
-              <div className={styles.formGroup}>
-                <label>状态</label>
-                <select
-                  value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className={styles.input}
-                >
-                  <option value="active">上线</option>
-                  <option value="coming">即将上线</option>
-                  <option value="inactive">下线</option>
-                </select>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className={styles.formGroup}>
+                  <label>状态</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className={styles.input}
+                  >
+                    <option value="active">上线</option>
+                    <option value="coming">即将上线</option>
+                    <option value="inactive">下线</option>
+                  </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>首页显示</label>
+                  <div
+                    onClick={() => setFormData({ ...formData, visible: !formData.visible })}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '0.5rem',
+                      padding: '0.5rem 0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px',
+                      cursor: 'pointer', background: formData.visible ? '#f0fdf4' : '#f8fafc',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {formData.visible ? (
+                      <><Eye size={16} style={{ color: '#16a34a' }} /> <span style={{ fontSize: '0.9rem', color: '#16a34a', fontWeight: 500 }}>显示</span></>
+                    ) : (
+                      <><EyeOff size={16} style={{ color: '#94a3b8' }} /> <span style={{ fontSize: '0.9rem', color: '#94a3b8', fontWeight: 500 }}>隐藏</span></>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>

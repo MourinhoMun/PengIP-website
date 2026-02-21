@@ -5,7 +5,7 @@ import prisma from '@/app/lib/db';
 export async function GET() {
   try {
     const tools = await prisma.tool.findMany({
-      where: { status: { not: 'inactive' } },
+      where: { status: { not: 'inactive' }, visible: true },
       orderBy: { sortOrder: 'asc' },
       select: {
         id: true,
