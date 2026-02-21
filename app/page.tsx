@@ -23,9 +23,9 @@ export default async function Home() {
       <Navbar />
       <main>
         <Hero />
+        <Tools tools={tools} />
         <Experience />
         <Services />
-        <Tools tools={tools} />
       </main>
       <Footer />
     </>

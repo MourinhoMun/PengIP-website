@@ -377,16 +377,22 @@ export default function DashboardPage() {
                       {tool.points} {lang === 'zh' ? '积分' : 'pts'}
                     </span>
                     <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
-                      {tool.downloadUrl && activations.some(a => a.tool.id === tool.id) && (
-                        <a
-                          href={tool.downloadUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.downloadSmBtn}
-                          title={lang === 'zh' ? '下载' : 'Download'}
-                        >
-                          <Download size={14} />
-                        </a>
+                      {tool.downloadUrl && (
+                        activations.some(a => a.tool.id === tool.id) ? (
+                          <a
+                            href={tool.downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.downloadSmBtn}
+                            title={lang === 'zh' ? '下载' : 'Download'}
+                          >
+                            <Download size={14} />
+                          </a>
+                        ) : (
+                          <span className={styles.wechatTip}>
+                            {lang === 'zh' ? '激活码请加微信：peng_ip' : 'Get code: WeChat peng_ip'}
+                          </span>
+                        )
                       )}
                       {isComing ? (
                         <span className={styles.comingBadge}>{lang === 'zh' ? '即将上线' : 'Coming'}</span>

@@ -580,6 +580,13 @@
   color: var(--text-muted);
 }
 
+.wechatTip {
+  font-size: 0.75rem;
+  color: #10b981;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 /* 响应式 */
 @media (max-width: 640px) {
   .container {
