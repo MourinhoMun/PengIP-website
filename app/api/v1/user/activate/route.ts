@@ -67,31 +67,70 @@ export async function POST(request: NextRequest) {
         await prisma.$transaction(async (tx) => {
             user = await tx.user.findUnique({ where: { deviceId } });
 
-            if (activationCode.type === 'license') {
+            if (activationCode.type === 'annual') {
                 if (!user) {
                     user = await tx.user.create({
                         data: {
                             deviceId,
                             password: 'device-login',
                             name: `Device User ${deviceId.substring(0, 6)}`,
-                            points: activationCode.points,
+                            points: 1000,
                             role: 'user',
                         },
                     });
-                } else {
+                    // 新用户，直接设置到期时间 + 赠积分已在 create 中设置
+                    const newExpiry = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
                     user = await tx.user.update({
                         where: { id: user.id },
-                        data: { points: { increment: activationCode.points } },
+                        data: { subscriptionExpiresAt: newExpiry },
                     });
+                    await tx.pointTransaction.create({
+                        data: {
+                            userId: user.id,
+                            amount: 1000,
+                            type: 'recharge',
+                            description: '年卡激活赠送积分',
+                            relatedId: activationCode.id,
+                        },
+                    });
+                } else {
+                    const now = new Date();
+                    const base = user.subscriptionExpiresAt && user.subscriptionExpiresAt > now
+                        ? user.subscriptionExpiresAt
+                        : now;
+                    const newExpiry = new Date(base.getTime() + 365 * 24 * 60 * 60 * 1000);
+                    const isFirstActivation = !user.subscriptionExpiresAt;
+
+                    user = await tx.user.update({
+                        where: { id: user.id },
+                        data: {
+                            subscriptionExpiresAt: newExpiry,
+                            ...(isFirstActivation ? { points: { increment: 1000 } } : {}),
+                        },
+                    });
+
+                    if (isFirstActivation) {
+                        await tx.pointTransaction.create({
+                            data: {
+                                userId: user.id,
+                                amount: 1000,
+                                type: 'recharge',
+                                description: '年卡激活赠送积分',
+                                relatedId: activationCode.id,
+                            },
+                        });
+                    }
                 }
             } else if (activationCode.type === 'recharge') {
                 if (!user) {
-                    throw new Error('User not found for this device. Please activate a license first.');
+                    throw new Error('User not found for this device. Please use an annual code first.');
                 }
                 user = await tx.user.update({
                     where: { id: user.id },
                     data: { points: { increment: activationCode.points } },
                 });
+            } else {
+                throw new Error('Unsupported activation code type: ' + activationCode.type);
             }
 
             // 6. 更新激活码：增加使用次数，记录设备
@@ -117,7 +156,7 @@ export async function POST(request: NextRequest) {
                     data: {
                         userId: user.id,
                         amount: activationCode.points,
-                        type: activationCode.type === 'license' ? 'register' : 'recharge',
+                        type: 'recharge',
                         description: `Code: ${activationCode.code} (device ${newUsedCount}/${activationCode.maxUses})`,
                         relatedId: activationCode.id,
                     },

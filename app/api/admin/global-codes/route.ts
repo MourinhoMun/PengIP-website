@@ -25,7 +25,7 @@ function generateCode(): string {
     return segments.join('-');
 }
 
-// GET: 获取全局激活码列表 (type != tool_activation)
+// GET: 获取全局激活码列表
 export async function GET(request: NextRequest) {
     try {
         if (!await checkAdmin()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -60,11 +60,11 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { type, points, count = 1, note } = body;
 
-        if (!['license', 'recharge'].includes(type)) {
-            return NextResponse.json({ error: 'Invalid type. Must be license or recharge' }, { status: 400 });
+        if (!['annual', 'recharge'].includes(type)) {
+            return NextResponse.json({ error: 'Invalid type. Must be annual or recharge' }, { status: 400 });
         }
 
-        if (typeof points !== 'number' || points < 0) {
+        if (type === 'recharge' && (typeof points !== 'number' || points < 0)) {
             return NextResponse.json({ error: 'Invalid points' }, { status: 400 });
         }
 

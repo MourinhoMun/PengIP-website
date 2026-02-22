@@ -22,6 +22,7 @@ model User {
   role          String    @default("user") // user | admin
   inviteCode    String    @unique @default(cuid()) // 邀请码
   invitedBy     String?   // 邀请人ID
+  subscriptionExpiresAt DateTime? // 订阅到期时间（年卡激活后设置）
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -52,6 +53,8 @@ model Tool {
   status        String      @default("active") // active | inactive | coming
   sortOrder     Int         @default(0)
   visible       Boolean     @default(true)
+  apiUrl        String?     // API调用地址
+  apiKey        String?     // API密钥（仅服务端使用）
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
@@ -66,15 +69,15 @@ model Tool {
 model ActivationCode {
   id          String    @id @default(cuid())
   code        String    @unique // 激活码
-  type        String    @default("tool_activation") // tool_activation | license | recharge
-  points      Int       @default(0) // 包含的积分
-  toolId      String?   // 对应工具 (Optional for license/recharge codes)
+  type        String    @default("annual") // annual | recharge
+  points      Int       @default(0) // 包含的积分（recharge 类型使用）
+  toolId      String?   // 对应工具（保留字段，兼容旧数据）
   userId      String?   // 分配给的用户
-  deviceId    String?   // 绑定的设备ID（兼容旧逻辑）
-  maxUses     Int       @default(3) // 最大可激活设备数
+  deviceId    String?   // 绑定的设备ID（客户端激活使用）
+  maxUses     Int       @default(1) // 最大可激活设备数（默认1台）
   usedCount   Int       @default(0) // 已激活设备数
   usedDevices String?   // 已激活的设备ID列表，JSON数组格式 如 ["deviceA","deviceB"]
-  status      String    @default("unused") // unused | active | used | assigned | expired
+  status      String    @default("unused") // unused | used | assigned | expired
   note        String?   // 备注
   createdAt   DateTime  @default(now())
   usedAt      DateTime? // 最后一次使用时间

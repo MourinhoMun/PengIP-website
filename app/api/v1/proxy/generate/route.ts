@@ -36,6 +36,11 @@ export async function POST(request: NextRequest) {
             const user = await tx.user.findUnique({ where: { id: userId } });
             if (!user) throw new Error('User not found');
 
+            const now = new Date();
+            if (!user.subscriptionExpiresAt || user.subscriptionExpiresAt < now) {
+                throw new Error('SUBSCRIPTION_REQUIRED');
+            }
+
             if (user.points < totalCost) {
                 throw new Error('Insufficient points');
             }
@@ -79,6 +84,9 @@ export async function POST(request: NextRequest) {
     } catch (error: any) {
         if (error.message === 'Insufficient points') {
             return NextResponse.json({ error: '积分不足' }, { status: 402 });
+        }
+        if (error.message === 'SUBSCRIPTION_REQUIRED') {
+            return NextResponse.json({ error: 'Subscription required', subscriptionRequired: true }, { status: 403 });
         }
         console.error('Generate proxy error:', error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
