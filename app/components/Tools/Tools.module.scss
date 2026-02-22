@@ -57,6 +57,55 @@
   margin: 0 auto;
 }
 
+/* 搜索框 */
+.searchWrapper {
+  position: relative;
+  max-width: 360px;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.875rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.6rem 2.5rem 0.6rem 2.375rem;
+  border: 1px solid var(--border-color);
+  border-radius: 100px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: white;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    border-color: var(--primary);
+  }
+}
+
+.searchClear {
+  position: absolute;
+  right: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -78,6 +127,8 @@
   border-radius: 10px;
   padding: 1.5rem;
   transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     border-color: var(--border-color-hover);
@@ -176,6 +227,7 @@
   background: var(--bg-tertiary);
   border-radius: 8px;
   cursor: not-allowed;
+  margin-top: auto;
 }
 
 .btnGroup {
@@ -183,6 +235,7 @@
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
+  margin-top: auto;
 }
 
 .tutorialBtn {

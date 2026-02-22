@@ -346,6 +346,7 @@
   border: 1px solid var(--border-color);
   border-radius: 10px;
   transition: all var(--transition-fast);
+  overflow: hidden;
 
   &:hover {
     border-color: var(--primary-light);

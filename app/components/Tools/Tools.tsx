@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { FileText, Presentation, Video, BarChart3, Plus, Sparkles, Lock, X, ArrowRight, PlayCircle } from 'lucide-react';
+import { FileText, Presentation, Video, BarChart3, Plus, Sparkles, Lock, X, ArrowRight, PlayCircle, Search } from 'lucide-react';
 import { useLanguage } from '@/app/i18n';
 import { useAuth } from '@/app/contexts/AuthContext';
 import styles from './Tools.module.scss';
@@ -18,6 +18,7 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
   const { user } = useAuth();
   const router = useRouter();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleToolClick = (toolUrl?: string) => {
     if (!user) {
@@ -27,7 +28,7 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
     router.push(toolUrl || '/dashboard');
   };
 
-  const displayTools = dbTools?.length ? dbTools.map((tool) => ({
+  const displayTools = (dbTools?.length ? dbTools.map((tool) => ({
     title: lang === 'en' ? (tool.nameEn || tool.name) : tool.name,
     description: lang === 'en' ? (tool.descriptionEn || tool.description) : tool.description,
     points: tool.points,
@@ -35,7 +36,11 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
     isComing: tool.status === 'coming',
     tutorialUrl: tool.tutorialUrl || null,
     url: tool.url || null,
-  })) : t.tools.items;
+  })) : t.tools.items).filter((tool: any) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return tool.title?.toLowerCase().includes(q) || tool.description?.toLowerCase().includes(q);
+  });
 
   return (
     <section className={styles.tools} id="tools">
@@ -57,6 +62,23 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
             {t.tools.subtitle}
           </p>
         </motion.div>
+
+        {/* 搜索框 */}
+        <div className={styles.searchWrapper}>
+          <Search size={15} className={styles.searchIcon} />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t.tools.searchPlaceholder}
+            className={styles.searchInput}
+          />
+          {searchQuery && (
+            <button className={styles.searchClear} onClick={() => setSearchQuery('')}>
+              <X size={13} />
+            </button>
+          )}
+        </div>
 
         <div className={styles.grid}>
           {displayTools.map((tool: any, index: number) => {

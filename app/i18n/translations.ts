@@ -57,6 +57,7 @@ export interface Translations {
     title: string;
     titleHighlight: string;
     subtitle: string;
+    searchPlaceholder: string;
     points: string;
     loginToUse: string;
     useTool: string;
@@ -207,6 +208,7 @@ export const translations: Record<Language, Translations> = {
       title: '医生专属 ',
       titleHighlight: 'AI效率工具箱',
       subtitle: '解决内容创作痛点',
+      searchPlaceholder: '搜索工具...',
       points: '积分',
       loginToUse: '登录使用',
       useTool: '立即使用',
@@ -351,6 +353,7 @@ export const translations: Record<Language, Translations> = {
       title: 'Doctor Exclusive ',
       titleHighlight: 'AI Toolbox',
       subtitle: 'Solving content creation pain points',
+      searchPlaceholder: 'Search tools...',
       points: 'Points',
       loginToUse: 'Login to Use',
       useTool: 'Use Now',
