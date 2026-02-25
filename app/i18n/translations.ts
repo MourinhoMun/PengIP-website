@@ -7,6 +7,7 @@ export interface Translations {
     services: string;
     tools: string;
     contact: string;
+    pricing: string;
     login: string;
     register: string;
     switchLang: string;
@@ -110,6 +111,7 @@ export const translations: Record<Language, Translations> = {
       services: '服务',
       tools: '工具',
       contact: '联系',
+      pricing: '会员',
       login: '登录',
       register: '注册',
       switchLang: 'EN',
@@ -170,15 +172,15 @@ export const translations: Record<Language, Translations> = {
           desc: '负责医美医生拓展与运营，深入理解平台流量逻辑',
         },
         {
-          year: '2014-2019',
+          year: '2010-2014',
           company: '辉瑞制药',
           role: '医药销售',
           desc: '积累扎实的医疗行业底蕴与专业销售能力',
         },
         {
-          year: '2010-2014',
-          company: '厦门大学',
-          role: '药学系',
+          year: '2006-2010',
+          company: '厦门大学医学院',
+          role: '医学专业',
           desc: '本科学习，构建医学基础认知体系',
         },
       ],
@@ -255,6 +257,7 @@ export const translations: Record<Language, Translations> = {
       services: 'Services',
       tools: 'Tools',
       contact: 'Contact',
+      pricing: 'Pricing',
       login: 'Login',
       register: 'Sign Up',
       switchLang: '中',
@@ -315,15 +318,15 @@ export const translations: Record<Language, Translations> = {
           desc: 'Responsible for doctor expansion and operation',
         },
         {
-          year: '2014-2019',
+          year: '2010-2014',
           company: 'Pfizer',
           role: 'Medical Sales',
           desc: 'Solid medical industry background and professional sales skills',
         },
         {
-          year: '2010-2014',
-          company: 'Xiamen University',
-          role: 'Pharmacy',
+          year: '2006-2010',
+          company: 'Xiamen University School of Medicine',
+          role: 'Medicine',
           desc: 'Bachelor degree, building medical knowledge foundation',
         },
       ],

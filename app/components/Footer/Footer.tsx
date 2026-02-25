@@ -15,6 +15,7 @@ export default function Footer() {
     { label: t.nav.experience, href: '#experience' },
     { label: t.nav.services, href: '#services' },
     { label: t.nav.tools, href: '#tools' },
+    { label: t.nav.pricing, href: '/pricing' },
   ];
 
   return (

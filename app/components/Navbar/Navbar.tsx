@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, User, Globe, LogOut, Settings, Coins } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/app/i18n';
 import { useAuth } from '@/app/contexts/AuthContext';
 import styles from './Navbar.module.scss';
@@ -14,6 +15,9 @@ export default function Navbar() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { t, toggleLanguage } = useLanguage();
   const { user, logout, loading } = useAuth();
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+  const anchor = (id: string) => isHome ? `#${id}` : `/#${id}`;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,12 +28,13 @@ export default function Navbar() {
   }, []);
 
   const navItems = [
-    { label: t.nav.about, href: '#about' },
-    { label: t.nav.experience, href: '#experience' },
-    { label: t.nav.services, href: '#services' },
-    { label: t.nav.tools, href: '#tools' },
-    { label: t.nav.contact, href: '#contact' },
+    { label: t.nav.about, href: anchor('about') },
+    { label: t.nav.experience, href: anchor('experience') },
+    { label: t.nav.services, href: anchor('services') },
+    { label: t.nav.tools, href: anchor('tools') },
+    { label: t.nav.contact, href: anchor('contact') },
   ];
+  const pricingLabel = t.nav.pricing;
 
   const handleLogout = async () => {
     await logout();
@@ -37,11 +42,12 @@ export default function Navbar() {
   };
 
   const handleMobileNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (!isHome) return; // 非首页直接跳转，不拦截
     e.preventDefault();
     setIsMobileMenuOpen(false);
-    // 等菜单关闭动画结束后再滚动
     setTimeout(() => {
-      const target = document.querySelector(href);
+      const id = href.replace('#', '');
+      const target = document.getElementById(id);
       if (target) {
         target.scrollIntoView({ behavior: 'smooth' });
       }
@@ -68,6 +74,9 @@ export default function Navbar() {
               {item.label}
             </a>
           ))}
+          <Link href="/pricing" className={`${styles.navLink} ${styles.pricingLink}`}>
+            {pricingLabel}
+          </Link>
         </div>
 
         {/* Right side: Lang + Auth */}
@@ -166,6 +175,19 @@ export default function Navbar() {
                 {item.label}
               </motion.a>
             ))}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: navItems.length * 0.05 }}
+            >
+              <Link
+                href="/pricing"
+                className={`${styles.mobileNavLink} ${styles.pricingMobileLink}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {pricingLabel}
+              </Link>
+            </motion.div>
             <div className={styles.mobileAuthButtons}>
               <button className={styles.langBtn} onClick={toggleLanguage}>
                 <Globe size={16} />

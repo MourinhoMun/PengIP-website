@@ -1,0 +1,325 @@
+.main {
+  padding-top: 80px;
+  min-height: 100vh;
+}
+
+// ── Hero ──────────────────────────────────────────────────────────────────────
+.hero {
+  text-align: center;
+  padding: 5rem 1.5rem 3rem;
+  background: linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
+}
+
+.heroContent {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 20px;
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.875rem;
+  }
+}
+
+.highlight {
+  color: var(--primary);
+}
+
+.heroSubtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+// ── Container ────────────────────────────────────────────────────────────────
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+// ── Pricing Card ─────────────────────────────────────────────────────────────
+.pricingSection {
+  padding: 3rem 0 4rem;
+}
+
+.cardWrapper {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.card {
+  position: relative;
+  background: white;
+  border: 2px solid var(--primary);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.12);
+}
+
+.cardBadge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.25rem 1.25rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  background: var(--primary);
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.cardHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.planName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.priceRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.15rem;
+  line-height: 1;
+}
+
+.currency {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  padding-bottom: 0.4rem;
+}
+
+.amount {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.period {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding-bottom: 0.5rem;
+}
+
+.priceNote {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.featureList {
+  list-style: none;
+  margin: 0 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.featureIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--primary);
+  border-radius: 8px;
+}
+
+.ctaBtn {
+  display: block;
+  width: 100%;
+  padding: 0.875rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: var(--primary);
+  border-radius: 10px;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: var(--primary-dark);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+  }
+}
+
+// ── Points Section ────────────────────────────────────────────────────────────
+.pointsSection {
+  padding: 4rem 0;
+  background: var(--bg-secondary);
+}
+
+.pointsBox {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.pointsIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: #fef3c7;
+  color: #f59e0b;
+  border-radius: 16px;
+  margin-bottom: 1.25rem;
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.sectionSubtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.pointsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pointCard {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    border-color: #f59e0b;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.12);
+  }
+}
+
+.pointValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f59e0b;
+  margin-bottom: 0.35rem;
+}
+
+.pointLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+// ── Join Section ──────────────────────────────────────────────────────────────
+.joinSection {
+  padding: 4rem 0 5rem;
+}
+
+.joinBox {
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.contactCard {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.25rem 2rem;
+  margin: 1.25rem 0 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    border-color: var(--border-color-hover);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.contactIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--primary);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.contactInfo {
+  text-align: left;
+}
+
+.contactLabel {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.15rem;
+}
+
+.contactValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.joinNote {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}

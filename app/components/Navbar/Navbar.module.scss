@@ -63,6 +63,24 @@
   }
 }
 
+.pricingLink {
+  color: var(--primary);
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--primary);
+  border-radius: 5px;
+
+  &:hover {
+    background: var(--primary);
+    color: white;
+  }
+}
+
+.pricingMobileLink {
+  color: var(--primary);
+  font-weight: 600;
+}
+
 .rightSection {
   display: flex;
   align-items: center;
