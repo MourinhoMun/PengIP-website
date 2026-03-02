@@ -63,8 +63,34 @@ export default async function ArticlePage(
     { year: 'numeric', month: 'long', day: 'numeric' }
   );
 
+  const schemaJson = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description: excerpt,
+    keywords: tags.join(', '),
+    datePublished: publishedAt,
+    dateModified: publishedAt,
+    url: article.url,
+    author: {
+      '@type': 'Organization',
+      name: 'PengIP',
+      url: 'https://pengip.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'PengIP',
+      url: 'https://pengip.com',
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': article.url,
+    },
+  });
+
   return (
     <div className="article-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaJson }} />
       <nav className="art-nav">
         <a href="/" className="art-nav-brand">鹏<span>哥</span></a>
         <a href="/" className="art-nav-back">← 返回首页</a>

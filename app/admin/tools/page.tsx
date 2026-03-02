@@ -17,6 +17,8 @@ interface Tool {
   tutorialUrl: string | null;
   apiUrl: string | null;
   apiKey: string | null;
+  category: string;
+  industry: string;
   status: string;
   sortOrder: number;
   visible: boolean;
@@ -55,6 +57,8 @@ const defaultTool = {
   tutorialUrl: '',
   apiUrl: '',
   apiKey: '',
+  category: 'doctor_ip',
+  industry: 'general',
   status: 'active',
   sortOrder: 0,
   visible: true,
@@ -133,6 +137,8 @@ export default function ToolsPage() {
       tutorialUrl: tool.tutorialUrl || '',
       apiUrl: tool.apiUrl || '',
       apiKey: tool.apiKey || '',
+      category: tool.category || 'doctor_ip',
+      industry: tool.industry || 'general',
       status: tool.status,
       sortOrder: tool.sortOrder,
       visible: tool.visible,
@@ -608,6 +614,34 @@ export default function ToolsPage() {
                     onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
                     className={styles.input}
                   />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className={styles.formGroup}>
+                  <label>工具分类（岗位）</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className={styles.input}
+                  >
+                    <option value="doctor_ip">🩺 医生IP</option>
+                    <option value="director">🎬 编导</option>
+                    <option value="designer">🎨 美工</option>
+                    <option value="general">🔧 通用</option>
+                  </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>行业属性</label>
+                  <select
+                    value={formData.industry}
+                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                    className={styles.input}
+                  >
+                    <option value="general">🌐 通用</option>
+                    <option value="medical_beauty">💄 美业专属</option>
+                  </select>
                 </div>
               </div>
 

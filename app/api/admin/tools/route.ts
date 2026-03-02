@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, nameEn, description, descriptionEn, icon, points, url, downloadUrl, tutorialUrl, tutorialContent, status, sortOrder, apiUrl, apiKey } = body;
+    const { name, nameEn, description, descriptionEn, icon, points, url, downloadUrl, tutorialUrl, tutorialContent, status, sortOrder, apiUrl, apiKey, category, industry } = body;
 
     if (!name || !description) {
       return NextResponse.json(
@@ -79,6 +79,8 @@ export async function POST(request: NextRequest) {
         visible: body.visible !== undefined ? body.visible : true,
         apiUrl: apiUrl || null,
         apiKey: apiKey || null,
+        category: category || 'doctor_ip',
+        industry: industry || 'general',
       },
     });
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Copy, Check, Download, X, Key, Search } from 'lucide-react';
+import { Plus, Copy, Check, Download, X, Key, Search, Trash2 } from 'lucide-react';
 import styles from '../admin.module.scss';
 
 interface GlobalCode {
@@ -32,6 +32,7 @@ export default function GlobalCodesPage() {
   const [searchCode, setSearchCode] = useState('');
   // 复制
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCodes();
@@ -81,6 +82,24 @@ export default function GlobalCodesPage() {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
     setTimeout(() => setCopiedCode(null), 1500);
+  };
+
+  const handleDelete = async (id: string, code: string) => {
+    if (!confirm(`确认删除激活码 ${code}？此操作不可撤销。`)) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/admin/global-codes/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setCodes(prev => prev.filter(c => c.id !== id));
+      } else {
+        const data = await res.json();
+        alert(data.error || '删除失败');
+      }
+    } catch {
+      alert('网络错误，请重试');
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const copyAllUnused = () => {
@@ -303,6 +322,17 @@ export default function GlobalCodesPage() {
                       >
                         {copiedCode === c.code ? <Check size={12} /> : <Copy size={12} />}
                       </button>
+                      {c.status === 'unused' && (
+                        <button
+                          onClick={() => handleDelete(c.id, c.code)}
+                          disabled={deletingId === c.id}
+                          className={`${styles.btn} ${styles.btnDanger} ${styles.btnSmall}`}
+                          style={{ marginLeft: '0.35rem' }}
+                          title="删除"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

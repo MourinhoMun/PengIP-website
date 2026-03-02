@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ balance: dbUser.points });
+        return NextResponse.json({ points: dbUser.points, balance: dbUser.points });
 
     } catch (error) {
         console.error('Balance error:', error);

@@ -52,6 +52,8 @@ model Tool {
   downloadUrl   String?     // 下载地址（百度网盘等）
   tutorialUrl     String?     // 教程视频链接
   tutorialContent String?     // 教程正文（Markdown）
+  category      String      @default("doctor_ip") // doctor_ip | director | designer | general
+  industry      String      @default("general")   // general | medical_beauty
   status        String      @default("active") // active | inactive | coming
   sortOrder     Int         @default(0)
   visible       Boolean     @default(true)
@@ -124,4 +126,36 @@ model PointTransaction {
 
   @@index([userId])
   @@index([type])
+}
+
+// 客服 FAQ
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  category  String   @default("general")
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 客服会话
+model ChatSession {
+  id        String        @id @default(cuid())
+  sessionId String        @unique
+  createdAt DateTime      @default(now())
+  messages  ChatMessage[]
+}
+
+// 客服消息
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  role      String      // user | assistant
+  content   String
+  createdAt DateTime    @default(now())
+  session   ChatSession @relation(fields: [sessionId], references: [id])
+
+  @@index([sessionId])
 }

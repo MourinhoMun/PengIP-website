@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Users, Wrench, BarChart3, LogOut, Menu, X, Home, CreditCard } from 'lucide-react';
+import { Users, Wrench, BarChart3, LogOut, Menu, X, Home, CreditCard, HelpCircle, MessageCircle } from 'lucide-react';
 import styles from './admin.module.scss';
 
 interface User {
@@ -72,6 +72,8 @@ export default function AdminLayout({
     { href: '/admin/users', label: '用户管理', icon: Users },
     { href: '/admin/tools', label: '工具管理', icon: Wrench },
     { href: '/admin/global-codes', label: '充值码管理', icon: CreditCard },
+    { href: '/admin/faq', label: 'FAQ 管理', icon: HelpCircle },
+    { href: '/admin/chat', label: '客服对话', icon: MessageCircle },
   ];
 
   return (

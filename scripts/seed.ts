@@ -107,6 +107,25 @@ async function main() {
   console.log('   邮箱: admin@pengip.com');
   console.log('   密码: admin123');
   console.log('\n🔗 访问后台: http://localhost:3000/admin');
+
+  // 初始化 FAQ
+  const existingFAQs = await prisma.fAQ.count();
+  if (existingFAQs === 0) {
+    const faqData = [
+      { question: '如何注册？', answer: '直接点击右上角"注册"按钮，填写邮箱和密码即可，注册后自动获得100积分。', category: 'general', sortOrder: 1 },
+      { question: '积分怎么用？', answer: '每个AI工具使用时消耗积分，不同工具消耗不同，图片生成类通常10积分/次。', category: 'points', sortOrder: 2 },
+      { question: '终身会员多少钱？', answer: '¥5000一次性付费，永久激活所有工具使用权，同时获得1000积分。', category: 'member', sortOrder: 3 },
+      { question: '如何购买会员？', answer: '加微信 peng_ip 联系鹏哥购买。', category: 'member', sortOrder: 4 },
+      { question: '工具用不了怎么办？', answer: '请检查积分是否充足，如有其他问题请加微信 peng_ip 反馈。', category: 'tools', sortOrder: 5 },
+      { question: '支持哪些AI工具？', answer: '目前有：医生海报科普图文生成器、术前模拟助手、AI患者康复历程、我的明星脸、AI肖像动态化，持续更新中。', category: 'tools', sortOrder: 6 },
+    ];
+    for (const faq of faqData) {
+      await prisma.fAQ.create({ data: faq });
+    }
+    console.log('✅ FAQ 初始数据已创建:', faqData.length, '条');
+  } else {
+    console.log('ℹ️ FAQ 已存在，跳过创建');
+  }
 }
 
 main()

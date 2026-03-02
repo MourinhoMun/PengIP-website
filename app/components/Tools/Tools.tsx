@@ -3,13 +3,14 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { FileText, Presentation, Video, BarChart3, Plus, Sparkles, Lock, X, ArrowRight, PlayCircle, Search } from 'lucide-react';
+import { FileText, Presentation, Video, BarChart3, Plus, Sparkles, Lock, X, ArrowRight, PlayCircle } from 'lucide-react';
 import { useLanguage } from '@/app/i18n';
 import { useAuth } from '@/app/contexts/AuthContext';
 import styles from './Tools.module.scss';
 
 const icons = [FileText, Presentation, Video, BarChart3, Plus];
 const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#71717a'];
+
 
 export default function Tools({ tools: dbTools }: { tools?: any[] }) {
   const containerRef = useRef(null);
@@ -18,17 +19,14 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
   const { user } = useAuth();
   const router = useRouter();
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  
 
   const handleToolClick = (toolUrl?: string) => {
-    if (!user) {
-      setShowLoginModal(true);
-      return;
-    }
+    if (!user) { setShowLoginModal(true); return; }
     router.push(toolUrl || '/dashboard');
   };
 
-  const displayTools = (dbTools?.length ? dbTools.map((tool) => ({
+  const displayTools = dbTools?.length ? dbTools.map((tool) => ({
     title: lang === 'en' ? (tool.nameEn || tool.name) : tool.name,
     description: lang === 'en' ? (tool.descriptionEn || tool.description) : tool.description,
     points: tool.points,
@@ -36,11 +34,7 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
     isComing: tool.status === 'coming',
     tutorialUrl: tool.tutorialUrl || null,
     url: tool.url || null,
-  })) : t.tools.items).filter((tool: any) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    return tool.title?.toLowerCase().includes(q) || tool.description?.toLowerCase().includes(q);
-  });
+  })) : t.tools.items;
 
   return (
     <section className={styles.tools} id="tools">
@@ -63,22 +57,6 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
           </p>
         </motion.div>
 
-        {/* 搜索框 */}
-        <div className={styles.searchWrapper}>
-          <Search size={15} className={styles.searchIcon} />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t.tools.searchPlaceholder}
-            className={styles.searchInput}
-          />
-          {searchQuery && (
-            <button className={styles.searchClear} onClick={() => setSearchQuery('')}>
-              <X size={13} />
-            </button>
-          )}
-        </div>
 
         <div className={styles.grid}>
           {displayTools.map((tool: any, index: number) => {
@@ -94,10 +72,20 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                {/* 积分标签 */}
+                {/* 积分标签 + 教程链接 */}
                 {!isComing && (
-                  <div className={styles.pointsBadge}>
-                    <span>{tool.points} {t.tools.points}</span>
+                  <div className={styles.topRight}>
+                    {tool.tutorialUrl && (
+                      <a href={tool.tutorialUrl} target="_blank" rel="noopener noreferrer" className={styles.tutorialIcon} title="查看教程" onClick={e => e.stopPropagation()}>
+                        <PlayCircle size={14} />
+                        <span>教程</span>
+                      </a>
+                    )}
+                    {tool.points > 0 && (
+                      <div className={styles.pointsBadge}>
+                        <span>{tool.points} {t.tools.points}</span>
+                      </div>
+                    )}
                   </div>
                 )}
 

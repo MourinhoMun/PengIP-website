@@ -29,6 +29,24 @@ export async function POST(request: NextRequest) {
         }
 
         if (activationCode.status === 'used') {
+            // 年卡已用：允许重新登录
+            if (activationCode.type === 'annual' && activationCode.userId) {
+                const existingUser = await prisma.user.findUnique({ where: { id: activationCode.userId } });
+                if (existingUser) {
+                    const token = sign(
+                        { userId: existingUser.id, deviceId: existingUser.deviceId, role: existingUser.role },
+                        JWT_SECRET,
+                        { expiresIn: '365d' }
+                    );
+                    await prisma.user.update({ where: { id: existingUser.id }, data: { currentToken: token } });
+                    return NextResponse.json({
+                        success: true,
+                        token,
+                        user: { userId: existingUser.id, balance: existingUser.points },
+                        message: '已重新登录',
+                    });
+                }
+            }
             return NextResponse.json({ error: 'Activation code has reached maximum uses' }, { status: 400 });
         }
 
@@ -48,6 +66,7 @@ export async function POST(request: NextRequest) {
                 JWT_SECRET,
                 { expiresIn: '365d' }
             );
+            await prisma.user.update({ where: { id: user.id }, data: { currentToken: token } });
             return NextResponse.json({
                 success: true,
                 token,
@@ -129,40 +148,6 @@ export async function POST(request: NextRequest) {
                     where: { id: user.id },
                     data: { points: { increment: activationCode.points } },
                 });
-            } else if (activationCode.type === 'trial') {
-                // 试用码：7天试用 + 100积分
-                if (!user) {
-                    user = await tx.user.create({
-                        data: {
-                            deviceId,
-                            password: 'device-login',
-                            name: `Trial User ${deviceId.substring(0, 6)}`,
-                            points: 100,
-                            role: 'user',
-                        },
-                    });
-                }
-                const now = new Date();
-                const base = user.subscriptionExpiresAt && user.subscriptionExpiresAt > now
-                    ? user.subscriptionExpiresAt
-                    : now;
-                const newExpiry = new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);
-                user = await tx.user.update({
-                    where: { id: user.id },
-                    data: {
-                        subscriptionExpiresAt: newExpiry,
-                        points: { increment: 100 },
-                    },
-                });
-                await tx.pointTransaction.create({
-                    data: {
-                        userId: user.id,
-                        amount: 100,
-                        type: 'recharge',
-                        description: '试用码激活赠送积分',
-                        relatedId: activationCode.id,
-                    },
-                });
             } else {
                 throw new Error('Unsupported activation code type: ' + activationCode.type);
             }
@@ -208,6 +193,8 @@ export async function POST(request: NextRequest) {
             JWT_SECRET,
             { expiresIn: '365d' }
         );
+
+        await prisma.user.update({ where: { id: user.id }, data: { currentToken: token } });
 
         return NextResponse.json({
             success: true,

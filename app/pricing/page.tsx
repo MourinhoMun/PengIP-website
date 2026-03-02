@@ -10,14 +10,14 @@ export default function PricingPage() {
   const brand = useBrand();
 
   const features = brand.isYimei ? [
-    { icon: <Zap size={18} />, text: '全部AI医美工具一年激活使用权' },
+    { icon: <Zap size={18} />, text: '全部AI医生IP工具终身激活使用权' },
     { icon: <RefreshCw size={18} />, text: '工具持续迭代更新，始终保持最新' },
-    { icon: <Star size={18} />, text: '专属医美行业 AI 工具，持续新增' },
+    { icon: <Star size={18} />, text: '专属医生IP行业 AI 工具，持续新增' },
     { icon: <Users size={18} />, text: '专属会员交流群，获得一手资讯' },
     { icon: <Check size={18} />, text: '优先体验内测新功能' },
     { icon: <Check size={18} />, text: '专属客服支持' },
   ] : [
-    { icon: <Zap size={18} />, text: '全部AI工具包一年激活使用权' },
+    { icon: <Zap size={18} />, text: '全部AI工具包终身激活使用权' },
     { icon: <RefreshCw size={18} />, text: '工具持续迭代更新，始终保持最新' },
     { icon: <Star size={18} />, text: '持续更新迭代，紧跟行业前沿' },
     { icon: <Users size={18} />, text: '专属会员交流群，获得一手资讯' },
@@ -44,8 +44,8 @@ export default function PricingPage() {
             </h1>
             <p className={styles.heroSubtitle}>
               {brand.isYimei
-                ? '加入年度会员，享受持续更新的 AI 医美工具，提升内容创作效率'
-                : '加入年度会员，享受持续更新的 AI 效率工具，提升创作效率'}
+                ? '加入终身会员，享受持续更新的 AI 医美工具，提升内容创作效率'
+                : '加入终身会员，享受持续更新的 AI 医生IP工具，助力个人品牌增长'}
             </p>
           </motion.div>
         </section>
@@ -61,13 +61,13 @@ export default function PricingPage() {
               <div className={styles.card}>
                 <div className={styles.cardBadge}>推荐</div>
                 <div className={styles.cardHeader}>
-                  <div className={styles.planName}>年度会员</div>
+                  <div className={styles.planName}>终身会员</div>
                   <div className={styles.priceRow}>
                     <span className={styles.currency}>¥</span>
                     <span className={styles.amount}>5,000</span>
-                    <span className={styles.period}> / 年</span>
+                    <span className={styles.period}> / 终身</span>
                   </div>
-                  <p className={styles.priceNote}>一次付费，全年无忧</p>
+                  <p className={styles.priceNote}>一次付费，终身无忧</p>
                 </div>
                 <ul className={styles.featureList}>
                   {features.map((f, i) => (

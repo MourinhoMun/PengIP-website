@@ -4,6 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from "./i18n";
 import { AuthProvider } from "./contexts/AuthContext";
 import { headers } from "next/headers";
+import ChatWidgetLoader from "./components/ChatWidgetLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,12 +23,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
   if (isYimei) {
     return {
-      title: "医美美工 - AI医美内容创作平台",
-      description: "专为医美从业者打造的AI工具平台，提升内容创作效率，助力品牌增长。",
-      keywords: ["医美AI", "医美工具", "AI医美", "医美内容创作", "医美美工"],
+      title: "鹏哥工具箱 - 医生IP的AI工具包",
+      description: "专为医生打造的AI工具平台，助力个人IP打造、内容创作与私域变现。",
+      keywords: ["医生IP", "医生AI工具", "AI医生", "医生内容创作", "鹏哥工具箱"],
       openGraph: {
-        title: "医美美工 - AI医美内容创作平台",
-        description: "专为医美从业者打造的AI工具平台",
+        title: "鹏哥工具箱 - 医生IP的AI工具包",
+        description: "专为医生打造的AI工具平台，助力个人IP打造",
         type: "website",
         locale: "zh_CN",
       },
@@ -59,6 +60,7 @@ export default function RootLayout({
         <AuthProvider>
           <LanguageProvider>
             {children}
+            <ChatWidgetLoader />
           </LanguageProvider>
         </AuthProvider>
       </body>

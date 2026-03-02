@@ -51,6 +51,8 @@ export default function DashboardPage() {
   const [activateCode, setActivateCode] = useState('');
   const [activating, setActivating] = useState(false);
   const [showRenewalModal, setShowRenewalModal] = useState(false);
+  const [rechargeCode, setRechargeCode] = useState('');
+  const [recharging, setRecharging] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -114,6 +116,34 @@ export default function DashboardPage() {
     }
   };
 
+  const handleRecharge = async () => {
+    if (!rechargeCode.trim()) {
+      setMessage({ type: 'error', text: '请输入积分码' });
+      return;
+    }
+    setRecharging(true);
+    setMessage(null);
+    try {
+      const res = await fetch('/api/tools/activate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: rechargeCode.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage({ type: 'success', text: data.message || '充值成功！' });
+        setRechargeCode('');
+        await refreshUser();
+      } else {
+        setMessage({ type: 'error', text: data.error || '充值失败' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: '网络错误，请重试' });
+    } finally {
+      setRecharging(false);
+    }
+  };
+
   const fetchHistory = async () => {
     try {
       const res = await fetch('/api/points');
@@ -127,7 +157,7 @@ export default function DashboardPage() {
   const handleUseTool = async (tool: Tool) => {
     if (!user) return;
     if (user.points < tool.points) {
-      setMessage({ type: 'error', text: `积分不足！需要 ${tool.points} 积分，当前 ${user.points} 积分` });
+      setMessage({ type: 'error', text: `积分不足！需要 ${tool.points} 积分，当前 ${user.points} 积分。请联系鹏哥微信：Peng_IP 购买年卡或者获得7天试用` });
       return;
     }
 
@@ -339,6 +369,35 @@ export default function DashboardPage() {
           </div>
         </section>
 
+        {/* 积分充值区域 */}
+        <section className={styles.rechargeSection} id="recharge">
+          <div className={styles.toolsHeader}>
+            <Coins size={22} />
+            <h2>{lang === 'zh' ? '充值积分' : 'Recharge Points'}</h2>
+          </div>
+          <p className={styles.toolsDesc}>
+            {lang === 'zh' ? '输入积分码，立即为账户充值积分' : 'Enter recharge code to add points to your account'}
+          </p>
+          <div className={styles.activateRow}>
+            <input
+              type="text"
+              value={rechargeCode}
+              onChange={(e) => setRechargeCode(e.target.value.toUpperCase())}
+              placeholder={lang === 'zh' ? '请输入积分码，如 XXXX-XXXX-XXXX-XXXX' : 'Enter code like XXXX-XXXX-XXXX-XXXX'}
+              className={styles.activateInput}
+              onKeyDown={(e) => e.key === 'Enter' && handleRecharge()}
+              id="rechargeInput"
+            />
+            <button
+              onClick={handleRecharge}
+              disabled={recharging}
+              className={styles.rechargeBtn}
+            >
+              {recharging ? '...' : (lang === 'zh' ? '充值' : 'Recharge')}
+            </button>
+          </div>
+        </section>
+
         {/* 工具列表 */}
         <section className={styles.toolsSection}>
           <div className={styles.toolsHeader}>
@@ -431,7 +490,10 @@ export default function DashboardPage() {
             <p className={styles.modalBody}>
               {subscriptionExpiry
                 ? `您的年卡已于 ${subscriptionExpiry.toLocaleDateString('zh-CN')} 到期，续费后可继续使用所有工具。`
-                : '使用工具需要激活年卡，请联系代理获取激活码。'}
+                : '使用工具需要激活年卡。'}
+            </p>
+            <p className={styles.modalContact}>
+              请联系鹏哥微信：<span>Peng_IP</span> 购买年卡或者获得7天试用
             </p>
             <div className={styles.modalActions}>
               <button

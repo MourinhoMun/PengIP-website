@@ -46,6 +46,8 @@ export async function PUT(
         visible: body.visible !== undefined ? body.visible : undefined,
         apiUrl: body.apiUrl || null,
         apiKey: body.apiKey || null,
+        category: body.category || 'doctor_ip',
+        industry: body.industry || 'general',
       },
     });
 

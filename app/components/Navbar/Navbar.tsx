@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, Globe, LogOut, Settings, Coins } from 'lucide-react';
+import { Menu, X, User, Globe, LogOut, Settings, Coins, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/app/i18n';
@@ -123,6 +123,10 @@ export default function Navbar() {
                         <Coins size={16} />
                         用户中心
                       </Link>
+                      <Link href="/dashboard#recharge" className={styles.menuItem} onClick={() => setShowUserMenu(false)}>
+                        <PlusCircle size={16} />
+                        充值积分
+                      </Link>
                       {user.role === 'admin' && (
                         <Link href="/admin" className={styles.menuItem} onClick={() => setShowUserMenu(false)}>
                           <Settings size={16} />
@@ -214,6 +218,10 @@ export default function Navbar() {
                   <Link href="/dashboard" className={styles.loginBtn} onClick={() => setIsMobileMenuOpen(false)}>
                     <Coins size={16} />
                     用户中心
+                  </Link>
+                  <Link href="/dashboard#recharge" className={styles.loginBtn} onClick={() => setIsMobileMenuOpen(false)}>
+                    <PlusCircle size={16} />
+                    充值积分
                   </Link>
                   {user.role === 'admin' && (
                     <Link href="/admin" className={styles.loginBtn} onClick={() => setIsMobileMenuOpen(false)}>
