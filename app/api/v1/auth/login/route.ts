@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         const isPhone = /^1[3-9]\d{9}$/.test(username);
 
         if (!isEmail && !isPhone) {
-            return NextResponse.json({ error: 'Invalid username format' }, { status: 400 });
+            return NextResponse.json({ error: '用户名格式不正确' }, { status: 400 });
         }
 
         // 查找用户（不存在返回 404）
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         // 验证密码（密码错误返回 401）
         const isValid = await verifyPassword(password, user.password);
         if (!isValid) {
-            return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
+            return NextResponse.json({ error: '密码错误' }, { status: 401 });
         }
 
         // 检查是否有 autoclip 使用权限（年卡有效 = 有权限）

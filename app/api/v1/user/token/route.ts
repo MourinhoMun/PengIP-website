@@ -10,7 +10,7 @@ export async function GET() {
     try {
         const currentUser = await getCurrentUser();
         if (!currentUser) {
-            return NextResponse.json({ error: 'Not logged in' }, { status: 401 });
+            return NextResponse.json({ error: '未登录，请先激活' }, { status: 401 });
         }
 
         const user = await prisma.user.findUnique({
@@ -19,13 +19,13 @@ export async function GET() {
         });
 
         if (!user) {
-            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+            return NextResponse.json({ error: '用户不存在' }, { status: 404 });
         }
 
         const now = new Date();
         if (!user.subscriptionExpiresAt || user.subscriptionExpiresAt < now) {
             return NextResponse.json({
-                error: 'No active subscription',
+                error: '会员已过期，请重新激活',
                 subscriptionRequired: true,
             }, { status: 403 });
         }
@@ -54,6 +54,6 @@ export async function GET() {
 
     } catch (error) {
         console.error('Token exchange error:', error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
+        return NextResponse.json({ error: '服务器错误' }, { status: 500 });
     }
 }

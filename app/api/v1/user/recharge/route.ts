@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     try {
         const user = await verifyBearerToken(request.headers.get('Authorization'));
         if (!user) {
-            return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+            return NextResponse.json({ error: '授权失效，请重新激活' }, { status: 401 });
         }
         const { userId } = user;
         const body = await request.json();

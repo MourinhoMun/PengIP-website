@@ -21,11 +21,11 @@ export async function POST(request: NextRequest) {
         });
 
         if (!activationCode) {
-            return NextResponse.json({ error: 'Invalid activation code' }, { status: 404 });
+            return NextResponse.json({ error: '激活码不存在或已失效' }, { status: 404 });
         }
 
         if (activationCode.status === 'expired') {
-            return NextResponse.json({ error: 'Activation code has expired' }, { status: 400 });
+            return NextResponse.json({ error: '激活码已过期' }, { status: 400 });
         }
 
         if (activationCode.status === 'used') {
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
             // 同一设备重复激活：不扣次数，直接返回 token
             let user = await prisma.user.findUnique({ where: { deviceId } });
             if (!user) {
-                return NextResponse.json({ error: 'Device user not found' }, { status: 404 });
+                return NextResponse.json({ error: '用户不存在' }, { status: 404 });
             }
             const token = sign(
                 { userId: user.id, deviceId: user.deviceId, role: user.role },

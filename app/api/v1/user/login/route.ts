@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         const isPhone = /^1[3-9]\d{9}$/.test(account);
 
         if (!isEmail && !isPhone) {
-            return NextResponse.json({ error: 'Invalid account format' }, { status: 400 });
+            return NextResponse.json({ error: '邮箱格式不正确' }, { status: 400 });
         }
 
         // 查找用户
@@ -29,13 +29,13 @@ export async function POST(request: NextRequest) {
         });
 
         if (!user) {
-            return NextResponse.json({ error: 'Invalid account or password' }, { status: 401 });
+            return NextResponse.json({ error: '账号或密码错误' }, { status: 401 });
         }
 
         // 验证密码
         const isValid = await verifyPassword(password, user.password);
         if (!isValid) {
-            return NextResponse.json({ error: 'Invalid account or password' }, { status: 401 });
+            return NextResponse.json({ error: '账号或密码错误' }, { status: 401 });
         }
 
         // 检查年卡是否有效

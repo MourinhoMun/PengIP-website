@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     try {
         const user = await verifyBearerToken(request.headers.get('Authorization'));
         if (!user) {
-            return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+            return NextResponse.json({ error: '授权失效，请重新激活' }, { status: 401 });
         }
         const { userId } = user;
 
@@ -75,9 +75,9 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: '积分不足' }, { status: 402 });
         }
         if (error.message === 'SUBSCRIPTION_REQUIRED') {
-            return NextResponse.json({ error: 'Subscription required', subscriptionRequired: true }, { status: 403 });
+            return NextResponse.json({ error: '需要会员订阅', subscriptionRequired: true }, { status: 403 });
         }
         console.error('Generate proxy error:', error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
+        return NextResponse.json({ error: '服务器错误' }, { status: 500 });
     }
 }

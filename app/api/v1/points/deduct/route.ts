@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     try {
         const user = await verifyBearerToken(request.headers.get('Authorization'));
         if (!user) {
-            return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+            return NextResponse.json({ error: '授权失效，请重新激活' }, { status: 401 });
         }
         const { userId } = user;
 
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
         const { software } = body;
 
         if (!software) {
-            return NextResponse.json({ error: 'Missing software parameter' }, { status: 400 });
+            return NextResponse.json({ error: '缺少必要参数' }, { status: 400 });
         }
 
         const tool = await prisma.tool.findFirst({
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!tool) {
-            return NextResponse.json({ error: 'Unknown software: ' + software }, { status: 404 });
+            return NextResponse.json({ error: '未知的工具: ' + software }, { status: 404 });
         }
 
         const cost = tool.points;
@@ -70,9 +70,9 @@ export async function POST(request: NextRequest) {
 
     } catch (error: any) {
         if (error.message === 'Insufficient points') {
-            return NextResponse.json({ error: 'Insufficient points' }, { status: 402 });
+            return NextResponse.json({ error: '积分不足，请充值' }, { status: 402 });
         }
         console.error('Points deduct error:', error);
-        return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
+        return NextResponse.json({ error: error.message || '服务器错误' }, { status: 500 });
     }
 }
