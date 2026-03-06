@@ -60,6 +60,9 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { type, points, count = 1, note } = body;
 
+        // Default device limit: annual codes allow 2 devices; others keep schema default.
+        const maxUses = type === 'annual' ? 2 : undefined;
+
         if (!['annual', 'recharge', 'trial'].includes(type)) {
             return NextResponse.json({ error: 'Invalid type. Must be annual, recharge or trial' }, { status: 400 });
         }
@@ -86,6 +89,7 @@ export async function POST(request: NextRequest) {
                         points,
                         status: 'unused',
                         note,
+                        ...(maxUses ? { maxUses } : {}),
                         toolId: null // Explicitly null for global codes
                     }
                 });

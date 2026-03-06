@@ -200,16 +200,47 @@ export default function ToolsPage() {
   };
 
   const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCode(code);
-    setTimeout(() => setCopiedCode(null), 1500);
+    const doCopy = () => {
+      const el = document.createElement('textarea');
+      el.value = code;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setCopiedCode(code);
+      setTimeout(() => setCopiedCode(null), 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(() => {
+        setCopiedCode(code);
+        setTimeout(() => setCopiedCode(null), 1500);
+      }).catch(doCopy);
+    } else {
+      doCopy();
+    }
   };
 
   const copyAllUnused = () => {
     const unusedCodes = codes.filter(c => c.status === 'unused').map(c => c.code).join('\n');
-    navigator.clipboard.writeText(unusedCodes);
-    setCopiedCode('all');
-    setTimeout(() => setCopiedCode(null), 1500);
+    if (!unusedCodes) { alert('没有未使用的激活码'); return; }
+    const doCopy = () => {
+      const el = document.createElement('textarea');
+      el.value = unusedCodes;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setCopiedCode('all');
+      setTimeout(() => setCopiedCode(null), 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(unusedCodes).then(() => {
+        setCopiedCode('all');
+        setTimeout(() => setCopiedCode(null), 1500);
+      }).catch(doCopy);
+    } else {
+      doCopy();
+    }
   };
 
   const exportUnusedAsTxt = () => {

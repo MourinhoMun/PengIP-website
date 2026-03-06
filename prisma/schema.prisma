@@ -116,7 +116,7 @@ model PointTransaction {
   id          String   @id @default(cuid())
   userId      String
   amount      Int      // 正数为增加，负数为扣除
-  type        String   // register | invite | invited | use_tool | recharge | admin_adjust
+  type        String   // register | invite | invited | use_tool | recharge | trial | refund | admin_adjust
   description String?
   relatedId   String?  // 关联的工具ID或用户ID
   createdAt   DateTime @default(now())
@@ -126,6 +126,7 @@ model PointTransaction {
 
   @@index([userId])
   @@index([type])
+  @@index([relatedId])
 }
 
 // 客服 FAQ

@@ -5,12 +5,12 @@ import { sign } from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
 
-// 用网页 session 换取客户端 JWT（供 PreVSim 等工具静默登录用）
+// 用网页 session 换取客户端 JWT（供子应用静默登录用）
 export async function GET() {
     try {
         const currentUser = await getCurrentUser();
         if (!currentUser) {
-            return NextResponse.json({ error: '未登录，请先激活' }, { status: 401 });
+            return NextResponse.json({ error: '未登录，请先登录主站' }, { status: 401 });
         }
 
         const user = await prisma.user.findUnique({
@@ -25,7 +25,7 @@ export async function GET() {
         const now = new Date();
         if (!user.subscriptionExpiresAt || user.subscriptionExpiresAt < now) {
             return NextResponse.json({
-                error: '会员已过期，请重新激活',
+                error: '会员已过期，请在主站重新激活',
                 subscriptionRequired: true,
             }, { status: 403 });
         }
@@ -36,7 +36,7 @@ export async function GET() {
             { expiresIn: '365d' }
         );
 
-        // 保存当前 token，踢掉旧设备
+        // 保存当前 token
         await prisma.user.update({
             where: { id: user.id },
             data: { currentToken: token },

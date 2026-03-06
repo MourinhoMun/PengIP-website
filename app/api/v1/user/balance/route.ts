@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: '用户不存在' }, { status: 404 });
         }
 
-        return NextResponse.json({ points: dbUser.points, balance: dbUser.points });
+        return NextResponse.json({ userId, points: dbUser.points, balance: dbUser.points });
 
     } catch (error) {
         console.error('Balance error:', error);

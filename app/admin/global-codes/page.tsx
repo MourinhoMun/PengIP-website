@@ -79,9 +79,31 @@ export default function GlobalCodesPage() {
   };
 
   const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCode(code);
-    setTimeout(() => setCopiedCode(null), 1500);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(() => {
+        setCopiedCode(code);
+        setTimeout(() => setCopiedCode(null), 1500);
+      }).catch(() => {
+        // fallback
+        const el = document.createElement('textarea');
+        el.value = code;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        setCopiedCode(code);
+        setTimeout(() => setCopiedCode(null), 1500);
+      });
+    } else {
+      const el = document.createElement('textarea');
+      el.value = code;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setCopiedCode(code);
+      setTimeout(() => setCopiedCode(null), 1500);
+    }
   };
 
   const handleDelete = async (id: string, code: string) => {
@@ -105,9 +127,30 @@ export default function GlobalCodesPage() {
   const copyAllUnused = () => {
     const unusedCodes = codes.filter(c => c.status === 'unused').map(c => c.code).join('\n');
     if (!unusedCodes) { alert('没有未使用的充值码'); return; }
-    navigator.clipboard.writeText(unusedCodes);
-    setCopiedCode('all');
-    setTimeout(() => setCopiedCode(null), 1500);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(unusedCodes).then(() => {
+        setCopiedCode('all');
+        setTimeout(() => setCopiedCode(null), 1500);
+      }).catch(() => {
+        const el = document.createElement('textarea');
+        el.value = unusedCodes;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        setCopiedCode('all');
+        setTimeout(() => setCopiedCode(null), 1500);
+      });
+    } else {
+      const el = document.createElement('textarea');
+      el.value = unusedCodes;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setCopiedCode('all');
+      setTimeout(() => setCopiedCode(null), 1500);
+    }
   };
 
   const exportUnusedAsTxt = () => {
