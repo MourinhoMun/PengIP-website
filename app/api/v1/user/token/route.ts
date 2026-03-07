@@ -5,12 +5,35 @@ import { sign } from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
 
+const ALLOWED_ORIGINS = [
+    'https://seedocinchina.com',
+    'https://www.seedocinchina.com',
+];
+
+function setCorsHeaders(response: NextResponse, origin?: string | null) {
+    if (origin && ALLOWED_ORIGINS.includes(origin)) {
+        response.headers.set('Access-Control-Allow-Origin', origin);
+        response.headers.set('Access-Control-Allow-Credentials', 'true');
+        response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+        response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    }
+    return response;
+}
+
+export async function OPTIONS(request: Request) {
+    const origin = request.headers.get('origin');
+    const response = new NextResponse(null, { status: 204 });
+    return setCorsHeaders(response, origin);
+}
+
 // 用网页 session 换取客户端 JWT（供子应用静默登录用）
-export async function GET() {
+export async function GET(request: Request) {
+    const origin = request.headers.get('origin');
     try {
         const currentUser = await getCurrentUser();
         if (!currentUser) {
-            return NextResponse.json({ error: '未登录，请先登录主站' }, { status: 401 });
+            const response = NextResponse.json({ error: '未登录，请先登录主站' }, { status: 401 });
+            return setCorsHeaders(response, origin);
         }
 
         const user = await prisma.user.findUnique({
@@ -19,15 +42,17 @@ export async function GET() {
         });
 
         if (!user) {
-            return NextResponse.json({ error: '用户不存在' }, { status: 404 });
+            const response = NextResponse.json({ error: '用户不存在' }, { status: 404 });
+            return setCorsHeaders(response, origin);
         }
 
         const now = new Date();
         if (!user.subscriptionExpiresAt || user.subscriptionExpiresAt < now) {
-            return NextResponse.json({
+            const response = NextResponse.json({
                 error: '会员已过期，请在主站重新激活',
                 subscriptionRequired: true,
             }, { status: 403 });
+            return setCorsHeaders(response, origin);
         }
 
         const token = sign(
@@ -42,7 +67,7 @@ export async function GET() {
             data: { currentToken: token },
         });
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             success: true,
             token,
             user: {
@@ -51,9 +76,11 @@ export async function GET() {
                 subscriptionExpiresAt: user.subscriptionExpiresAt,
             },
         });
+        return setCorsHeaders(response, origin);
 
     } catch (error) {
         console.error('Token exchange error:', error);
-        return NextResponse.json({ error: '服务器错误' }, { status: 500 });
+        const response = NextResponse.json({ error: '服务器错误' }, { status: 500 });
+        return setCorsHeaders(response, origin);
     }
 }
