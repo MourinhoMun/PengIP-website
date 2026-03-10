@@ -134,6 +134,27 @@ export default function PricingPage() {
                 </div>
               </div>
               <p className={styles.joinNote}>* 会员到期前会提醒续费，续费价格与首次相同</p>
+              
+              <div style={{ marginTop: '30px', padding: '20px', background: '#f0f9ff', borderRadius: '12px', border: '1px solid #bfdbfe' }}>
+                <h3 style={{ fontSize: '18px', marginBottom: '10px', color: '#1e40af' }}>🎁 有试用码？</h3>
+                <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '15px' }}>
+                  注册后在用户中心激活试用码，即可体验 7 天 + 100 积分
+                </p>
+                <a 
+                  href="/register" 
+                  style={{ 
+                    display: 'inline-block',
+                    padding: '10px 20px',
+                    background: '#3b82f6',
+                    color: 'white',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    fontSize: '14px'
+                  }}
+                >
+                  立即注册 →
+                </a>
+              </div>
             </motion.div>
           </div>
         </section>

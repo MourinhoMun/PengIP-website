@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
 import { verifyBearerToken } from '@/app/lib/auth';
+import { fail, mapError } from '@/app/lib/apiError';
 
 const COST_PER_IMAGE = 10;
 
@@ -9,7 +10,12 @@ export async function POST(request: NextRequest) {
     try {
         const user = await verifyBearerToken(request.headers.get('Authorization'));
         if (!user) {
-            return NextResponse.json({ error: '授权失效，请重新激活' }, { status: 401 });
+            return fail(401, {
+                code: 'AUTH_EXPIRED',
+                error: '登录信息失效了，你需要重新登录/激活一下才能继续生成。',
+                reason: '你的授权信息已过期或不正确。',
+                next: '请回到主站重新登录后再试；如果你是激活码用户，请重新输入激活码激活。',
+            });
         }
         const { userId } = user;
 
@@ -70,14 +76,9 @@ export async function POST(request: NextRequest) {
             cost: totalCost
         });
 
-    } catch (error: any) {
-        if (error.message === 'Insufficient points') {
-            return NextResponse.json({ error: '积分不足' }, { status: 402 });
-        }
-        if (error.message === 'SUBSCRIPTION_REQUIRED') {
-            return NextResponse.json({ error: '需要会员订阅', subscriptionRequired: true }, { status: 403 });
-        }
+    } catch (error: unknown) {
         console.error('Generate proxy error:', error);
-        return NextResponse.json({ error: '服务器错误' }, { status: 500 });
+        const mapped = mapError(error);
+        return fail(mapped.status, mapped.body);
     }
 }

@@ -76,30 +76,30 @@ export async function POST(request: NextRequest) {
             // Keep points at 0 to avoid double-counting in pointTransaction later.
         }
 
-        const codes: string[] = [];
-        // 简单去重逻辑 (实际生产应用更严谨的碰撞检测)
-        for (let i = 0; i < count; i++) {
-            codes.push(generateCode());
+        const safeCount = Math.min(Math.max(Number(count) || 1, 1), 200);
+
+        // 使用 while 循环保证生成足够数量，碰撞时重试
+        const generatedCodes = new Set<string>();
+        while (generatedCodes.size < safeCount) {
+            generatedCodes.add(generateCode());
         }
 
         const results = [];
-        for (const code of codes) {
-            // Check existence
+        for (const code of generatedCodes) {
             const exists = await prisma.activationCode.findUnique({ where: { code } });
-            if (!exists) {
-                const res = await prisma.activationCode.create({
-                    data: {
-                        code,
-                        type,
-                        points,
-                        status: 'unused',
-                        note,
-                        ...(maxUses ? { maxUses } : {}),
-                        toolId: null // Explicitly null for global codes
-                    }
-                });
-                results.push(res);
-            }
+            if (exists) continue; // 极低概率碰撞，跳过并继续（下次请求会补）
+            const res = await prisma.activationCode.create({
+                data: {
+                    code,
+                    type,
+                    points: points ?? 0,
+                    status: 'unused',
+                    note,
+                    ...(maxUses ? { maxUses } : {}),
+                    toolId: null,
+                }
+            });
+            results.push(res);
         }
 
         return NextResponse.json({

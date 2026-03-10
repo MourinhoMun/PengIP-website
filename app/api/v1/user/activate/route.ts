@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
 import { sign } from 'jsonwebtoken';
+import { fail, mapError } from '@/app/lib/apiError';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
 
@@ -12,7 +13,12 @@ export async function POST(request: NextRequest) {
 
         // 1. 参数校验
         if (!code || !deviceId) {
-            return NextResponse.json({ error: 'Code and deviceId are required' }, { status: 400 });
+            return fail(400, {
+                code: 'MISSING_PARAMETER',
+                error: '你这次激活信息没填完整，所以激活不了。',
+                reason: '缺少 code（激活码）或 deviceId（设备标识）。',
+                next: '请回到激活页面重新输入激活码后再试；如果是小程序/子应用调用，请刷新页面重试。',
+            });
         }
 
         // 2. 查找激活码
@@ -21,11 +27,30 @@ export async function POST(request: NextRequest) {
         });
 
         if (!activationCode) {
-            return NextResponse.json({ error: '激活码不存在或已失效' }, { status: 404 });
+            return fail(404, {
+                code: 'ACTIVATION_CODE_NOT_FOUND',
+                error: '这个激活码我们没查到，可能输错了或者已经失效了。',
+                reason: '系统找不到对应的激活码记录。',
+                next: '请检查大小写和字符（建议直接复制粘贴）；如果是购买的激活码，请确认是否已过期或被停用。',
+            });
         }
 
         if (activationCode.status === 'expired') {
-            return NextResponse.json({ error: '激活码已过期' }, { status: 400 });
+            return fail(400, {
+                code: 'ACTIVATION_CODE_EXPIRED',
+                error: '这个激活码已经过期了，用不了了。',
+                reason: '激活码状态是“已过期”。',
+                next: '请联系鹏哥获取新的激活码，或更换有效的激活码再试。',
+            });
+        }
+
+        if (activationCode.status === 'suspended') {
+            return fail(400, {
+                code: 'ACTIVATION_CODE_SUSPENDED',
+                error: '这个激活码被暂停使用了，暂时激活不了。',
+                reason: '激活码状态是“已暂停”。',
+                next: '请联系鹏哥处理（可能需要恢复该码的状态），或换一个可用的激活码。',
+            });
         }
 
         if (activationCode.status === 'used') {
@@ -53,7 +78,12 @@ export async function POST(request: NextRequest) {
                     }
                 }
             }
-            return NextResponse.json({ error: 'Activation code has reached maximum uses' }, { status: 400 });
+            return fail(400, {
+                code: 'ACTIVATION_CODE_MAX_USES',
+                error: '这个激活码已经被用满了，暂时不能再激活。',
+                reason: '该激活码的可用次数已达到上限。',
+                next: '请换一个新的激活码；如果你觉得不应该用满，请把激活码和设备信息发给我们核对。',
+            });
         }
 
         // 3. 检查设备是否已经用过这个码
@@ -65,7 +95,12 @@ export async function POST(request: NextRequest) {
             // 同一设备重复激活：不扣次数，直接返回 token
             let user = await prisma.user.findUnique({ where: { deviceId } });
             if (!user) {
-                return NextResponse.json({ error: '用户不存在' }, { status: 404 });
+                return fail(404, {
+                    code: 'USER_NOT_FOUND',
+                    error: '我们没找到你的账号信息，所以没法帮你直接登录。',
+                    reason: '该设备对应的用户记录不存在。',
+                    next: '请使用年卡/试用码先激活一次创建账号；如果你之前激活过但找不到，请把设备信息发给我们排查。',
+                });
             }
             const token = sign(
                 { userId: user.id, deviceId: user.deviceId, role: user.role },
@@ -81,15 +116,16 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        // 4. 检查是否还有剩余次数
-        if (activationCode.usedCount >= activationCode.maxUses) {
-            return NextResponse.json({ error: 'Activation code has reached maximum uses' }, { status: 400 });
-        }
-
-        // 5. 事务处理
+        // 4. 事务处理（maxUses 检查移入事务内，避免并发竞态）
         let user: any;
 
         await prisma.$transaction(async (tx) => {
+            // 事务内重新读取激活码并校验剩余次数，防止并发超额
+            const lockedCode = await tx.activationCode.findUnique({ where: { id: activationCode.id } });
+            if (!lockedCode || lockedCode.usedCount >= lockedCode.maxUses) {
+                throw new Error('Activation code has reached maximum uses');
+            }
+
             user = await tx.user.findUnique({ where: { deviceId } });
 
             if (activationCode.type === 'annual') {
@@ -254,8 +290,8 @@ export async function POST(request: NextRequest) {
                 },
             });
 
-            // 7. 记录交易流水
-            if (user) {
+            // 7. 仅充值码需要额外记录流水（年卡/试用/月卡的流水已在上方各自分支中记录）
+            if (user && activationCode.type === 'recharge' && activationCode.points > 0) {
                 await tx.pointTransaction.create({
                     data: {
                         userId: user.id,
@@ -270,7 +306,12 @@ export async function POST(request: NextRequest) {
 
         // 8. 生成 Token
         if (!user) {
-            return NextResponse.json({ error: 'Failed to process user' }, { status: 500 });
+            return fail(500, {
+                code: 'ACTIVATE_FAILED',
+                error: '激活没成功，系统没生成你的账号信息。',
+                reason: '服务器处理激活流程时发生了异常。',
+                next: '请稍等 10-30 秒再试一次；如果还是不行，把激活码和发生时间发给我们。',
+            });
         }
 
         const token = sign(
@@ -290,8 +331,36 @@ export async function POST(request: NextRequest) {
             },
         });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Activate error:', error);
-        return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
+
+        const msg = String((error as { message?: unknown } | null)?.message ?? '');
+        if (msg.includes('maximum uses')) {
+            return fail(400, {
+                code: 'ACTIVATION_CODE_MAX_USES',
+                error: '这个激活码已经被用满了，暂时不能再激活。',
+                reason: '该激活码的可用次数已达到上限。',
+                next: '请换一个新的激活码；如果你觉得不应该用满，请把激活码和设备信息发给我们核对。',
+            });
+        }
+        if (msg.startsWith('User not found for this device')) {
+            return fail(400, {
+                code: 'RECHARGE_NEEDS_ACCOUNT',
+                error: '你用的是充值码，但这个设备还没创建账号，所以充不了。',
+                reason: '充值码只能给已经激活过（有账号）的设备充值。',
+                next: '请先用年卡/试用码激活一次创建账号，再用充值码充值。',
+            });
+        }
+        if (msg.startsWith('Unsupported activation code type')) {
+            return fail(400, {
+                code: 'ACTIVATION_CODE_TYPE_UNSUPPORTED',
+                error: '这个激活码类型我们暂时不支持。',
+                reason: msg,
+                next: '请联系鹏哥确认你买的激活码类型；或者换一个可用的激活码再试。',
+            });
+        }
+
+        const mapped = mapError(error);
+        return fail(mapped.status, mapped.body);
     }
 }

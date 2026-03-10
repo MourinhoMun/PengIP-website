@@ -40,6 +40,10 @@ export async function POST(request: NextRequest) {
         throw new Error('EXPIRED');
       }
 
+      if (activation.status === 'suspended') {
+        throw new Error('SUSPENDED');
+      }
+
       if (activation.userId && activation.userId !== currentUser.userId) {
         throw new Error('NOT_YOURS');
       }
@@ -109,6 +113,46 @@ export async function POST(request: NextRequest) {
         return { type: 'recharge', points: activation.points };
       }
 
+      // 试用类型：7天订阅 + 首次激活赠送100积分
+      if (activation.type === 'trial') {
+        const user = await tx.user.findUnique({ where: { id: currentUser.userId } });
+        if (!user) throw new Error('USER_NOT_FOUND');
+
+        const now = new Date();
+        const base = user.subscriptionExpiresAt && user.subscriptionExpiresAt > now
+          ? user.subscriptionExpiresAt
+          : now;
+        const newExpiry = new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const isFirstActivation = !user.subscriptionExpiresAt;
+
+        await tx.user.update({
+          where: { id: user.id },
+          data: {
+            subscriptionExpiresAt: newExpiry,
+            ...(isFirstActivation ? { points: { increment: 100 } } : {}),
+          },
+        });
+
+        if (isFirstActivation) {
+          await tx.pointTransaction.create({
+            data: {
+              userId: user.id,
+              amount: 100,
+              type: 'recharge',
+              description: '试用码激活赠送积分',
+              relatedId: activation.id,
+            },
+          });
+        }
+
+        await tx.activationCode.update({
+          where: { id: activation.id },
+          data: { status: 'used', userId: currentUser.userId, usedAt: new Date() },
+        });
+
+        return { type: 'trial', newExpiry, isFirstActivation };
+      }
+
       // 不支持的类型
       throw new Error('UNSUPPORTED_TYPE');
     });
@@ -129,12 +173,21 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    if (result.type === 'trial' && result.newExpiry) {
+      return NextResponse.json({
+        success: true,
+        message: `试用码激活成功，有效期至 ${result.newExpiry.toLocaleDateString('zh-CN')}${result.isFirstActivation ? '，已赠送 100 积分' : ''}`,
+        subscriptionExpiresAt: result.newExpiry,
+      });
+    }
+
     return NextResponse.json({ error: '不支持的激活码类型' }, { status: 400 });
   } catch (error: any) {
     const errorMap: Record<string, { error: string; status: number }> = {
       NOT_FOUND: { error: '激活码不存在', status: 404 },
       ALREADY_USED: { error: '该激活码已被使用', status: 400 },
       EXPIRED: { error: '该激活码已过期', status: 400 },
+      SUSPENDED: { error: '该激活码已被暂停使用', status: 400 },
       NOT_YOURS: { error: '该激活码不属于你', status: 403 },
       USER_NOT_FOUND: { error: '用户不存在', status: 404 },
       UNSUPPORTED_TYPE: { error: '不支持的激活码类型', status: 400 },

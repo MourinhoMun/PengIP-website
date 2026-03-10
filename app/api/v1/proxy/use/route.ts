@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
 import { verifyBearerToken } from '@/app/lib/auth';
+import { fail, mapError } from '@/app/lib/apiError';
 
 const ALLOWED_ORIGINS = [
     'https://seedocinchina.com',
@@ -28,7 +29,12 @@ export async function POST(request: NextRequest) {
     try {
         const user = await verifyBearerToken(request.headers.get('Authorization'));
         if (!user) {
-            const response = NextResponse.json({ error: '授权失效，请重新激活' }, { status: 401 });
+            const response = fail(401, {
+                code: 'AUTH_EXPIRED',
+                error: '登录信息失效了，你需要重新登录/激活一下。',
+                reason: '你的授权信息已过期或不正确。',
+                next: '回到 pengip.com 主站重新登录后再试；如果你是激活码用户，请重新输入激活码激活。',
+            });
             return setCorsHeaders(response, origin);
         }
         const { userId } = user;
@@ -37,7 +43,12 @@ export async function POST(request: NextRequest) {
         const { software } = body;
 
         if (!software) {
-            const response = NextResponse.json({ error: '缺少必要参数' }, { status: 400 });
+            const response = fail(400, {
+                code: 'MISSING_PARAMETER',
+                error: '这次请求少了必要信息，所以没法继续。',
+                reason: '缺少参数 software（工具标识）。',
+                next: '请刷新页面重试；如果你是从子应用调用，请联系我检查子应用传参是否正确。',
+            });
             return setCorsHeaders(response, origin);
         }
 
@@ -46,7 +57,12 @@ export async function POST(request: NextRequest) {
         });
 
         if (!tool) {
-            const response = NextResponse.json({ error: '未知的工具: ' + software }, { status: 404 });
+            const response = fail(404, {
+                code: 'TOOL_NOT_FOUND',
+                error: '这个功能我们暂时没识别到，可能还没开通或已经下线了。',
+                reason: `找不到工具标识：${software}`,
+                next: '请确认你访问的是最新版本页面；如果是新功能刚上线，等 1-2 分钟再刷新试试。',
+            });
             return setCorsHeaders(response, origin);
         }
 
@@ -98,17 +114,10 @@ export async function POST(request: NextRequest) {
         });
         return setCorsHeaders(response, origin);
 
-    } catch (error: any) {
-        if (error.message === 'Insufficient points') {
-            const response = NextResponse.json({ error: '积分不足，请充值' }, { status: 402 });
-            return setCorsHeaders(response, origin);
-        }
-        if (error.message === 'SUBSCRIPTION_REQUIRED') {
-            const response = NextResponse.json({ error: '需要会员订阅', subscriptionRequired: true }, { status: 403 });
-            return setCorsHeaders(response, origin);
-        }
+    } catch (error: unknown) {
         console.error('Proxy use error:', error);
-        const response = NextResponse.json({ error: error.message || '服务器错误' }, { status: 500 });
+        const mapped = mapError(error);
+        const response = fail(mapped.status, mapped.body);
         return setCorsHeaders(response, origin);
     }
 }

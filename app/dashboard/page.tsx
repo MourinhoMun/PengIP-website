@@ -347,7 +347,7 @@ export default function DashboardPage() {
             <h2>{lang === 'zh' ? '激活年卡' : 'Activate'}</h2>
           </div>
           <p className={styles.toolsDesc}>
-            {lang === 'zh' ? '输入年卡激活码，激活后可使用所有工具，有效期 365 天' : 'Enter annual card code to unlock all tools for 365 days'}
+            {lang === 'zh' ? '输入年卡/月卡/7天试用激活码，激活后可使用所有工具' : 'Enter annual/monthly/trial code to unlock all tools'}
           </p>
           <div className={styles.activateRow}>
             <input

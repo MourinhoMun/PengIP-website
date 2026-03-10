@@ -20,7 +20,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   // usedCount >= maxUses → 'used'（已用完），否则 → 'active'（仍可用）
   // 未使用过的码（usedCount === 0）恢复为 'unused'
   const newStatus = isSuspended
-    ? (code.usedCount === 0 ? 'unused' : code.usedCount >= code.maxUses ? 'used' : 'active')
+    ? (code.usedCount >= code.maxUses ? 'used' : 'unused')
     : 'suspended';
 
   const updated = await prisma.activationCode.update({

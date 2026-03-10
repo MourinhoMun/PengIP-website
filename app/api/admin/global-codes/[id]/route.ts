@@ -24,8 +24,8 @@ export async function DELETE(
         if (!code) {
             return NextResponse.json({ error: '激活码不存在' }, { status: 404 });
         }
-        if (code.status === 'used') {
-            return NextResponse.json({ error: '已使用的激活码不能删除' }, { status: 400 });
+        if (['used', 'assigned', 'suspended'].includes(code.status)) {
+            return NextResponse.json({ error: '已使用、已分配或已暂停的激活码不能删除' }, { status: 400 });
         }
 
         await prisma.activationCode.delete({ where: { id } });

@@ -21,9 +21,25 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   
 
-  const handleToolClick = (toolUrl?: string) => {
+  const handleToolClick = async (toolUrl?: string, isExternal?: boolean) => {
     if (!user) { setShowLoginModal(true); return; }
-    router.push(toolUrl || '/dashboard');
+    
+    if (isExternal && toolUrl) {
+      try {
+        const res = await fetch('/api/v1/user/token', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          const token = data.token;
+          window.location.href = `${toolUrl}?token=${token}`;
+        } else {
+          router.push(toolUrl);
+        }
+      } catch {
+        router.push(toolUrl);
+      }
+    } else {
+      router.push(toolUrl || '/dashboard');
+    }
   };
 
   const displayTools = dbTools?.length ? dbTools.map((tool) => ({
@@ -34,6 +50,7 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
     isComing: tool.status === 'coming',
     tutorialUrl: tool.tutorialUrl || null,
     url: tool.url || null,
+    isExternal: tool.isExternal || false,
   })) : t.tools.items;
 
   return (
@@ -122,7 +139,7 @@ export default function Tools({ tools: dbTools }: { tools?: any[] }) {
                 {/* 按钮 */}
                 {!isComing ? (
                   <div className={styles.btnGroup}>
-                    <button className={styles.useBtn} style={{ background: color }} onClick={() => handleToolClick(tool.url)}>
+                    <button className={styles.useBtn} style={{ background: color }} onClick={() => handleToolClick(tool.url, tool.isExternal)}>
                       {user ? <ArrowRight size={14} /> : <Lock size={14} />}
                       {user ? t.tools.useTool : t.tools.loginToUse}
                     </button>

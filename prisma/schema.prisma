@@ -49,6 +49,7 @@ model Tool {
   icon          String?
   points        Int         @default(5) // 使用消耗积分
   url           String?     // 工具跳转链接
+  isExternal    Boolean     @default(false) // 是否外部链接（需要带token跳转）
   downloadUrl   String?     // 下载地址（百度网盘等）
   tutorialUrl     String?     // 教程视频链接
   tutorialContent String?     // 教程正文（Markdown）

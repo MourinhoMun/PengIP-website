@@ -162,6 +162,8 @@ export async function PUT(
       updateData.userId = null;
       updateData.status = 'unused';
       updateData.usedAt = null;
+      updateData.usedCount = 0;
+      updateData.usedDevices = null;
     }
 
     if (note !== undefined) {
