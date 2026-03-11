@@ -4,7 +4,13 @@ import prisma from '@/app/lib/db';
 import { sign } from 'jsonwebtoken';
 import { fail, mapError } from '@/app/lib/apiError';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is required');
+}
+
+// Tell TS that JWT_SECRET is definitely a string after the runtime check.
+const JWT_SECRET_VALUE: string = JWT_SECRET;
 
 export async function POST(request: NextRequest) {
     try {
@@ -65,7 +71,7 @@ export async function POST(request: NextRequest) {
                     if (existingUser) {
                         const token = sign(
                             { userId: existingUser.id, deviceId: existingUser.deviceId, role: existingUser.role },
-                            JWT_SECRET,
+                            JWT_SECRET_VALUE,
                             { expiresIn: '365d' }
                         );
                         await prisma.user.update({ where: { id: existingUser.id }, data: { currentToken: token } });
@@ -104,7 +110,7 @@ export async function POST(request: NextRequest) {
             }
             const token = sign(
                 { userId: user.id, deviceId: user.deviceId, role: user.role },
-                JWT_SECRET,
+                JWT_SECRET_VALUE,
                 { expiresIn: '365d' }
             );
             await prisma.user.update({ where: { id: user.id }, data: { currentToken: token } });
@@ -316,7 +322,7 @@ export async function POST(request: NextRequest) {
 
         const token = sign(
             { userId: user.id, deviceId: user.deviceId, role: user.role },
-            JWT_SECRET,
+            JWT_SECRET_VALUE,
             { expiresIn: '365d' }
         );
 

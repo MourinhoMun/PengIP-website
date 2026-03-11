@@ -3,7 +3,13 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import prisma from '@/app/lib/db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is required');
+}
+
+// Tell TS that JWT_SECRET is definitely a string after the runtime check.
+const JWT_SECRET_VALUE: string = JWT_SECRET;
 
 export interface JWTPayload {
   userId: string;
@@ -24,13 +30,13 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 
 // 生成 JWT Token
 export function generateToken(payload: JWTPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, JWT_SECRET_VALUE, { expiresIn: '7d' });
 }
 
 // 验证 JWT Token
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload;
+    return jwt.verify(token, JWT_SECRET_VALUE) as JWTPayload;
   } catch {
     return null;
   }
@@ -69,7 +75,7 @@ export async function verifyBearerToken(authHeader: string | null): Promise<{ us
 
   let decoded: any;
   try {
-    decoded = jwt.verify(token, JWT_SECRET);
+    decoded = jwt.verify(token, JWT_SECRET_VALUE);
   } catch {
     return null;
   }

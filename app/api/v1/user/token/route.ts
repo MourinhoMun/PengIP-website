@@ -4,7 +4,13 @@ import { getCurrentUser } from '@/app/lib/auth';
 import { fail, mapError } from '@/app/lib/apiError';
 import { sign } from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is required');
+}
+
+// Tell TS that JWT_SECRET is definitely a string after the runtime check.
+const JWT_SECRET_VALUE: string = JWT_SECRET;
 
 const ALLOWED_ORIGINS = [
     'https://seedocinchina.com',
@@ -70,7 +76,7 @@ export async function GET(request: Request) {
 
         const token = sign(
             { userId: user.id, role: user.role },
-            JWT_SECRET,
+            JWT_SECRET_VALUE,
             { expiresIn: '365d' }
         );
 
