@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
 import { getCurrentUser } from '@/app/lib/auth';
+import type { PrismaClient } from '@prisma/client';
+
+type TxClient = Parameters<Parameters<PrismaClient['$transaction']>[0]>[0];
 
 // 用户使用激活码激活工具
 export async function POST(request: NextRequest) {
@@ -20,7 +23,7 @@ export async function POST(request: NextRequest) {
     const normalizedCode = code.trim().toUpperCase();
 
     // 使用事务：原子性地查找 + 校验 + 更新激活码
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: TxClient) => {
       const activation = await tx.activationCode.findFirst({
         where: { code: normalizedCode },
         include: {
