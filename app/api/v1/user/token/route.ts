@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
 import { getCurrentUser } from '@/app/lib/auth';
 import { fail, mapError } from '@/app/lib/apiError';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
 
         const user = await prisma.user.findUnique({
             where: { id: currentUser.userId },
-            select: { id: true, points: true, subscriptionExpiresAt: true, role: true },
+            select: { id: true, points: true, subscriptionExpiresAt: true, role: true, currentToken: true },
         });
 
         if (!user) {
@@ -74,17 +74,23 @@ export async function GET(request: Request) {
             return setCorsHeaders(response, origin);
         }
 
-        const token = sign(
-            { userId: user.id, role: user.role },
-            JWT_SECRET_VALUE,
-            { expiresIn: '365d' }
-        );
-
-        // 保存当前 token
-        await prisma.user.update({
-            where: { id: user.id },
-            data: { currentToken: token },
-        });
+        // 复用已有有效 token，避免多个子应用互相踢掉对方的登录态
+        let token = user.currentToken;
+        let isExistingTokenValid = false;
+        if (token) {
+            try { verify(token, JWT_SECRET_VALUE); isExistingTokenValid = true; } catch { token = null; }
+        }
+        if (!isExistingTokenValid) {
+            token = sign(
+                { userId: user.id, role: user.role },
+                JWT_SECRET_VALUE,
+                { expiresIn: '365d' }
+            );
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { currentToken: token },
+            });
+        }
 
         const response = NextResponse.json({
             success: true,
