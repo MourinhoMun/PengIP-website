@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, ExternalLink } from 'lucide-react';
+import { ArrowLeft, BookOpen } from 'lucide-react';
 import styles from './tutorial.module.scss';
 
 interface Tool {
@@ -62,25 +62,17 @@ export default function TutorialPage() {
           </div>
         </div>
 
-        {tool.tutorialUrl && (
-          <div className={styles.videoSection}>
-            <h2><BookOpen size={18} /> 视频教程</h2>
-            <div className={styles.videoWrap}>
-              <iframe
-                src={tool.tutorialUrl}
-                allowFullScreen
-                frameBorder="0"
-                title="教程视频"
-              />
-            </div>
-          </div>
-        )}
-
-        {tool.tutorialContent && (
+        {tool.tutorialContent ? (
           <div
             className={styles.content}
             dangerouslySetInnerHTML={{ __html: tool.tutorialContent }}
           />
+        ) : (
+          <div className={styles.noContent}>
+            <BookOpen size={32} />
+            <p>文字教程即将上线，敬请期待</p>
+            <p className={styles.noContentSub}>如有疑问请联系鹏哥微信：<strong>Peng_IP</strong></p>
+          </div>
         )}
 
         <div className={styles.footer}>

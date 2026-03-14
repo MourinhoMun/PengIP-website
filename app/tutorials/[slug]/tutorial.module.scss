@@ -226,6 +226,27 @@
   }
 }
 
+.noContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  color: #94a3b8;
+  gap: 0.75rem;
+  text-align: center;
+
+  p { margin: 0; font-size: 1rem; }
+}
+
+.noContentSub {
+  font-size: 0.85rem !important;
+  strong { color: #6366f1; }
+}
+
 .footer {
   margin-top: 2.5rem;
   text-align: center;
