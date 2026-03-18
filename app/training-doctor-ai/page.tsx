@@ -349,6 +349,31 @@ export default function DoctorAITrainingPage() {
         </div>
       </section>
 
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>合作医院（部分）</h2>
+          <p className={styles.sectionSubtitle}>
+            以下为部分合作医院/交流单位展示（持续更新）。
+          </p>
+
+          <div className={styles.partnerWrap}>
+            {[
+              '北京协和医院',
+              '复旦大学附属华山医院',
+              '复旦大学附属中山医院',
+              '中南大学湘雅医院',
+              '武汉同济医院',
+            ].map((name) => (
+              <div key={name} className={styles.partnerChip}>{name}</div>
+            ))}
+          </div>
+
+          <div className={styles.partnerNote}>
+            说明：如你的医院/科室希望加入合作名单，可在咨询时说明，我们会在确认后更新展示。
+          </div>
+        </div>
+      </section>
+
       <section className={styles.cta} id="contact">
         <div className={styles.container}>
           <div className={styles.ctaBox}>
