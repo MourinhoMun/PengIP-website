@@ -4,8 +4,8 @@ import styles from './brief.module.scss';
 import { AESTHETIC_AI_BRIEF_TEXT } from '../training-aesthetic-ai/brief';
 
 export const metadata: Metadata = {
-  title: '医美AI营销助理共创营（简约版）｜鹏哥',
-  description: '医美AI营销助理共创营简约版（600字），带着问题来，带着产品走。',
+  title: '医美AI落地训练营（简约版）｜鹏哥',
+  description: '医美AI落地训练营简约版（600字）：医美+AI主题培训（技能训练 + 共创交付），带着问题来，带着产品走。',
 };
 
 export default function AestheticAITrainingBriefPage() {
@@ -14,8 +14,8 @@ export default function AestheticAITrainingBriefPage() {
       <header className={styles.hero}>
         <div className={styles.heroInner}>
           <div className={styles.badge}>简约版 · 600字</div>
-          <h1 className={styles.title}>医美AI营销助理共创营</h1>
-          <p className={styles.subtitle}>给医生/机构老板/运营/咨询团队快速扫一眼的版本（适合转发）。</p>
+          <h1 className={styles.title}>医美AI落地训练营</h1>
+          <p className={styles.subtitle}>医美 + AI 主题培训：技能训练 + 共创交付（适合转发）。</p>
           <div className={styles.actions}>
             <Link className={styles.primaryBtn} href="/training-aesthetic-ai">查看详细版 →</Link>
             <Link className={styles.secondaryBtn} href="/training">返回培训列表</Link>

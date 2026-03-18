@@ -3,8 +3,8 @@ import Link from 'next/link';
 import styles from './aesthetic.module.scss';
 
 export const metadata: Metadata = {
-  title: '医美AI营销助理共创营｜带着问题来，带着产品走｜鹏哥',
-  description: '面向医美医生、机构老板与咨询团队的AI实战培训：围绕私域、公域、素材、沟通、直播等场景，2-3天共创一个可用的AI工具/流程。',
+  title: '医美AI落地训练营（培训 + 共创交付）｜带着问题来，带着产品走｜鹏哥',
+  description: '面向医美医生、机构老板与咨询团队的医美+AI主题培训：围绕私域、公域、素材、沟通、直播等场景，2-3天技能训练+共创交付一个可用的AI工具/流程。',
 };
 
 export default function AestheticAITrainingPage() {
@@ -12,11 +12,12 @@ export default function AestheticAITrainingPage() {
     <main className={styles.page}>
       <header className={styles.hero}>
         <div className={styles.heroInner}>
-          <div className={styles.badge}>医美人群专属 · 全能营销助理</div>
-          <h1 className={styles.title}>医美AI营销助理共创营</h1>
+          <div className={styles.badge}>医美 + AI 主题培训 · 培训 + 共创交付</div>
+          <h1 className={styles.title}>医美AI落地训练营</h1>
           <p className={styles.subtitle}>
-            带着问题来，带着产品走。你带来一个具体业务场景（私域/公域/素材/沟通/直播），我们用2天或3天把它做成可运行原型或可复用流程，
-            并交付SOP与模板，让AI真正成为你的“全能营销助理”。
+            这不仅是培训，更是共创交付营：带着你的场景和问题来，2天或3天后带着可落地的产品/流程回去。
+            我们会在训练过程中补齐你真正需要的AI技能（提示词、工作流、评测与风控、落地方法），
+            并由一线、拥有成功落地经验的医美AI导师陪你把方案做出来、跑通、交付。
           </p>
 
           <div className={styles.heroActions}>
@@ -128,10 +129,10 @@ export default function AestheticAITrainingPage() {
           <div className={styles.ctaBox}>
             <div>
               <h2 className={styles.ctaTitle}>准备好把你的场景做成产品了吗？</h2>
-              <p className={styles.ctaText}>添加微信 <strong>peng_ip</strong>，备注“医美AI共创营”。</p>
+              <p className={styles.ctaText}>添加微信 <strong>peng_ip</strong>，备注“医美AI落地训练营”。</p>
               <div className={styles.copyBox}>
                 <div className={styles.copyTitle}>咨询模板（建议复制）</div>
-                <pre className={styles.copyPre}>{`备注：医美AI共创营
+                <pre className={styles.copyPre}>{`备注：医美AI落地训练营
 角色（医生/老板/运营/咨询）：___
 城市/机构：___
 我想解决的场景问题（越具体越好）：___
@@ -141,7 +142,7 @@ export default function AestheticAITrainingPage() {
             </div>
             <div className={styles.side}>
               <div className={styles.sideTitle}>你的目标</div>
-              <div className={styles.sideText}>让AI成为全能营销助理：内容、线索、私域、沟通、直播，全部能跑起来。</div>
+              <div className={styles.sideText}>技能训练 + 共创交付：把AI真正落到私域、公域、素材、沟通、直播这些关键场景。</div>
               <Link className={styles.sideLink} href="/training-aesthetic-ai-brief">先看简约版 →</Link>
               <Link className={styles.sideLink} href="/training">返回培训列表 →</Link>
             </div>
