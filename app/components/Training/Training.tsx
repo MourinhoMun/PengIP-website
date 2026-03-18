@@ -15,10 +15,10 @@ const courses = [
   },
   {
     tag: '青少年专项',
-    title: 'AI微创业工作坊',
-    subtitle: '面向青少年的AI创业启蒙课程',
+    title: 'AI共创变现营',
+    subtitle: '带着孩子做出可上线AI产品，并探索真实变现',
     price: '¥16,800',
-    priceNote: '小班教学 · 实战项目',
+    priceNote: '小班教学 · 项目共创 · 可落地',
     color: '#f59e0b',
     url: 'https://pengip.com/ai-workshop',
   },
@@ -30,6 +30,15 @@ const courses = [
     priceNote: '定制化培训方案',
     color: '#10b981',
     url: 'https://pengip.com/training-doctor-ip',
+  },
+  {
+    tag: '医生专属 · 三甲版',
+    title: '严肃医学科普与合规运营训练营',
+    subtitle: '手术 / 门诊 / 口播三场景 SOP（更严谨、更克制）',
+    price: '查看',
+    priceNote: '适合三甲/公立体系医生',
+    color: '#0ea5e9',
+    url: 'https://pengip.com/training-doctor-ip-senior',
   },
 ];
 

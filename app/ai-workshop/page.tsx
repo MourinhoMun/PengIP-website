@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import styles from './workshop.module.scss';
 
 export const metadata: Metadata = {
-  title: 'AI微创业工作坊（青少年）— 鹏哥',
-  description: '一个月，让孩子用AI做出自己的第一个项目。3-6人小班，线下实战，导师全程陪伴。¥16,800/人/月。',
+  title: 'AI共创变现营（青少年）— 鹏哥',
+  description: '一个月，带着孩子做出第一个可上线的AI产品/项目，并探索真实变现路径。3-6人小班，线下实战，导师全程陪伴。¥16,800/人/月。',
 };
 
 export default function AIWorkshopPage() {
@@ -13,9 +13,9 @@ export default function AIWorkshopPage() {
       {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
-          <div className={styles.badge}>青少年 AI 创业启蒙</div>
-          <h1 className={styles.heroTitle}>AI 微创业工作坊</h1>
-          <p className={styles.heroSubtitle}>一个月，让孩子用AI做出自己的第一个项目</p>
+          <div className={styles.badge}>青少年 AI 共创启蒙 · 可落地</div>
+          <h1 className={styles.heroTitle}>AI 共创变现营</h1>
+          <p className={styles.heroSubtitle}>一个月，带着孩子做出第一个可上线的 AI 产品/项目，并探索变现</p>
           <p className={styles.heroSub2}>小班制 · 3-6人 · 线下实战 · 导师全程陪伴</p>
         </div>
       </section>
@@ -24,10 +24,10 @@ export default function AIWorkshopPage() {
 
         {/* 为什么选择 */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🌟 为什么选择AI微创业工作坊？</h2>
+          <h2 className={styles.sectionTitle}>🌟 为什么选择AI共创变现营？</h2>
           <div className={styles.highlightBox}>
-            <div className={styles.highlightTitle}>不是"学AI"，而是"用AI创业"</div>
-            <p>我们不教孩子当程序员，而是教他们像创业者一样思考和行动。AI是工具，创造力才是核心。一个月后，每个孩子都会拥有自己亲手打造的项目作品。</p>
+            <div className={styles.highlightTitle}>不是"学AI"，而是"用AI解决问题并变现"</div>
+            <p>我们不是教孩子当程序员，而是带着孩子做项目：从真实问题出发，用AI把想法做成可上线的产品/项目，并探索第一条变现路径。做出来一次，信心与能力就会持续增长。</p>
           </div>
           <div className={styles.cardGrid}>
             <div className={`${styles.card} ${styles.blue}`}>
@@ -190,14 +190,14 @@ export default function AIWorkshopPage() {
             <div className={styles.mentorAvatar}>🧑‍💻</div>
             <div>
               <div className={styles.mentorName}>Adrian Wu（鹏哥）</div>
-              <div className={styles.mentorTitle}>AI创业导师 · 连续创业者</div>
+              <div className={styles.mentorTitle}>创业导师 · AI产品与变现实战</div>
               <ul className={styles.mentorList}>
                 <li>厦门大学医学院本科</li>
                 <li>10+年医疗与科技行业深耕</li>
                 <li>AI医疗创业联合创始人，获数千万融资</li>
                 <li>海外医疗项目合伙人（4年跨国创业经验）</li>
-                <li>AI工具产品化专家，主导多款AI产品从0到1</li>
-                <li>深度AI使用者，擅长用AI解决真实商业问题</li>
+                <li>AI工具产品化专家：从0到1做产品、做增长、做交付</li>
+                <li>具备AI变现实战经验：带项目从“做出来”到“有人愿意付费”</li>
               </ul>
             </div>
           </div>
@@ -246,7 +246,7 @@ export default function AIWorkshopPage() {
             <p style={{color: '#94a3b8', fontSize: '0.875rem'}}>3人成团 · 6人封顶 · 名额有限</p>
             <br />
             <a href="https://pengip.com#contact" className={styles.ctaBtn}>立即咨询报名 →</a>
-            <p className={styles.ctaNote}>添加微信咨询详情，备注"AI工作坊"：peng_ip</p>
+            <p className={styles.ctaNote}>添加微信咨询详情，备注"AI共创变现营"：peng_ip</p>
           </div>
         </div>
       </section>
