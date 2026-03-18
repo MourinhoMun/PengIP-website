@@ -141,6 +141,30 @@
   line-height: 1.7;
 }
 
+.sloganBox {
+  margin: 14px 0 18px;
+  border-radius: calc(var(--a-radius) + 6px);
+  border: 1px solid rgba(219, 39, 119, 0.18);
+  background:
+    radial-gradient(850px 420px at 10% 20%, rgba(219, 39, 119, 0.14), transparent 60%),
+    radial-gradient(850px 420px at 100% 60%, rgba(15, 118, 110, 0.10), transparent 55%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.84) 0%, rgba(255, 241, 250, 0.55) 100%);
+  padding: 16px;
+  box-shadow: 0 22px 55px rgba(2, 6, 23, 0.08);
+}
+
+.sloganTitle {
+  font-weight: 950;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.sloganText {
+  color: rgba(11, 18, 32, 0.74);
+  line-height: 1.85;
+  font-size: 14px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

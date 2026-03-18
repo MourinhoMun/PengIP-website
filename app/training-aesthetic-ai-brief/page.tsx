@@ -13,7 +13,7 @@ export default function AestheticAITrainingBriefPage() {
     <main className={styles.page}>
       <header className={styles.hero}>
         <div className={styles.heroInner}>
-          <div className={styles.badge}>简约版 · 600字</div>
+          <div className={styles.badge}>简约版 · 约600字</div>
           <h1 className={styles.title}>医美AI落地训练营</h1>
           <p className={styles.subtitle}>医美 + AI 主题培训：技能训练 + 共创交付（适合转发）。</p>
           <div className={styles.actions}>

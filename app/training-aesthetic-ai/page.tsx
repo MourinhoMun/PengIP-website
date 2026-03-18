@@ -38,6 +38,16 @@ export default function AestheticAITrainingPage() {
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>典型场景（你提一个，我们做一个）</h2>
           <p className={styles.sectionSubtitle}>围绕真实业务场景，把“想提效”变成“可交付工具/流程”。</p>
+
+          <div className={styles.sloganBox}>
+            <div className={styles.sloganTitle}>口号：AI≠假案例，AI在医美的应用远不止“讲案例/造素材”</div>
+            <div className={styles.sloganText}>
+              很多人把“医美+AI”直观理解成“假案例/假素材”，这是最浅显、也最容易误解的一种形式。
+              我们强调：AI在医美的应用是多元、正规、可审计的——比如3D人脸建模与“看脸”类产品（如脸觉），
+              也比如把咨询录音做结构化分析，找出话术、节奏、异议处理的提升点，从而提高成单率。
+              这些都是合法合规的AI落地方式。
+            </div>
+          </div>
           <div className={styles.grid}>
             {[
               {
