@@ -24,11 +24,20 @@ const courses = [
   },
   {
     tag: '医生专属',
+    title: '医美AI获客与内容增长训练营',
+    subtitle: '医美机构/医生：内容、转化、SOP 一套打通',
+    price: '查看',
+    priceNote: '课程详情与报名方式',
+    color: '#10b981',
+    url: 'https://pengip.com/training-aesthetic-ai',
+  },
+  {
+    tag: '医生专属',
     title: '医生IP打造实战培训',
     subtitle: '从0到1打造医生个人品牌完整手册',
     price: '面议',
     priceNote: '定制化培训方案',
-    color: '#10b981',
+    color: '#22c55e',
     url: 'https://pengip.com/training-doctor-ip',
   },
   {
