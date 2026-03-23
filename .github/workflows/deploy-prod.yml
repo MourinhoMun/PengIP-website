@@ -1,0 +1,87 @@
+name: Deploy (Prod)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to deploy (branch, tag, sha)'
+        required: true
+        default: 'main'
+      app_dir:
+        description: 'Remote app dir'
+        required: true
+        default: '/var/www/peng-ip-website'
+      pm2_name:
+        description: 'PM2 process name'
+        required: true
+        default: 'peng-ip-website-new'
+      health_url:
+        description: 'Optional healthcheck URL (empty to skip)'
+        required: false
+        default: ''
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync
+
+      - name: Add known_hosts
+        env:
+          DEPLOY_HOSTS: ${{ secrets.DEPLOY_HOSTS }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          while IFS= read -r host; do
+            [ -z "$host" ] && continue
+            # host formats allowed: root@1.2.3.4 or 1.2.3.4
+            h=${host#*@}
+            ssh-keyscan -H "$h" >> ~/.ssh/known_hosts
+          done <<< "$DEPLOY_HOSTS"
+
+      - name: Rsync code + remote deploy
+        env:
+          DEPLOY_HOSTS: ${{ secrets.DEPLOY_HOSTS }}
+          APP_DIR: ${{ inputs.app_dir }}
+          PM2_NAME: ${{ inputs.pm2_name }}
+          HEALTH_URL: ${{ inputs.health_url }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${DEPLOY_HOSTS:-}" ]; then
+            echo "DEPLOY_HOSTS secret is empty" >&2
+            exit 1
+          fi
+
+          while IFS= read -r host; do
+            [ -z "$host" ] && continue
+
+            echo "== Deploy to $host =="
+
+            # Ensure remote dir exists.
+            ssh "$host" "mkdir -p '$APP_DIR'"
+
+            # Sync code. Keep remote .env/db/uploads untouched.
+            rsync -az --delete \
+              --exclude-from="scripts/rsync-exclude.txt" \
+              ./ "$host":"$APP_DIR"/
+
+            # Run remote build+reload.
+            ssh "$host" "APP_DIR='$APP_DIR' PM2_NAME='$PM2_NAME' HEALTH_URL='$HEALTH_URL' bash '$APP_DIR/scripts/deploy_remote.sh'"
+          done <<< "$DEPLOY_HOSTS"
