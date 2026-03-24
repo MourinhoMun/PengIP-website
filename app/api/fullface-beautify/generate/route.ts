@@ -12,45 +12,45 @@ const TOOL_NAME_EN = 'fullface-beautify';
 type Resolution = '1k' | '2k';
 
 const PARTS: Record<string, { label: string; instruction: string }> = {
+  nose_synthesis: {
+    label: '鼻综合（鼻尖/鼻梁/鼻翼整体协调）',
+    instruction: '鼻梁/鼻尖/鼻翼整体更协调、更精致、更立体，但必须自然真实不过度夸张。',
+  },
+  alar_reduction: {
+    label: '鼻翼缩小（鼻翼/鼻孔更精致）',
+    instruction: '鼻翼更收拢、鼻孔形态更秀气；保持自然比例与真实光影。',
+  },
+  eye_comprehensive: {
+    label: '双眼皮/眼综合（上睑更精神）',
+    instruction: '上眼睑形态更精神自然（双眼皮/眼综合取向），但不夸张、不网红款；保持同一个人的眼型身份特征。',
+  },
+  eye_bags: {
+    label: '去眼袋/泪沟改善（下睑年轻化）',
+    instruction: '轻度改善眼袋/泪沟/黑眼圈与疲惫感，但必须保留真实质感，避免把眼周变成假皮肤。',
+  },
+  midface_filler: {
+    label: '中面填充/法令纹改善（玻尿酸/脂肪取向）',
+    instruction: '面中更饱满协调、法令纹更淡但自然；不要出现夸张膨胀或面部变形。',
+  },
+  botox: {
+    label: '瘦脸/除皱肉毒（动态纹更淡）',
+    instruction: '轮廓更利落、动态纹更淡，但表情必须自然不过僵硬；不要改变整体脸型身份。',
+  },
+  contour_lift: {
+    label: '下颌缘清晰/轮廓提升（不改身份）',
+    instruction: '下颌缘更清晰、整体更紧致年轻，但克制自然；不做网红脸，不重塑整张脸。',
+  },
+  chin_aug: {
+    label: '隆下巴（更立体但克制）',
+    instruction: '下巴更立体协调但克制自然；不要夸张兜翘或明显改变脸型身份。',
+  },
+  lip: {
+    label: '丰唇/唇形调整（自然，不夸张）',
+    instruction: '唇形与唇色更协调自然；不要夸张丰唇或强烈医美感。',
+  },
   skin: {
-    label: '皮肤质感',
-    instruction: '减少痘印与瑕疵，但保留真实皮肤纹理与毛孔；禁止过度磨皮或塑料感。',
-  },
-  eyes: {
-    label: '眼睛（神采）',
-    instruction: '让眼神更有精神、更清澈自然；不夸张放大、不改变眼型与身份特征。',
-  },
-  underEye: {
-    label: '眼袋/泪沟/黑眼圈',
-    instruction: '轻度改善眼袋、泪沟、黑眼圈与浮肿，但必须自然真实，不要“熨平”成假皮肤。',
-  },
-  brows: {
-    label: '眉形/眉色',
-    instruction: '眉形更利落协调，眉色更自然均匀；保持原眉毛走向与个人气质，不要纹眉感。',
-  },
-  nose: {
-    label: '鼻子',
-    instruction: '轻度提升鼻部立体感（鼻梁/鼻尖/鼻翼更精致），保持自然真实比例。',
-  },
-  lips: {
-    label: '嘴唇',
-    instruction: '轻度优化唇形与唇色，保持自然，不做夸张丰唇。',
-  },
-  teeth: {
-    label: '牙齿/笑容',
-    instruction: '如果牙齿可见：轻度更干净明亮，但不要过白；保持牙齿形态，不做夸张整齐“烤瓷牙”。',
-  },
-  cheeks: {
-    label: '面颊/苹果肌',
-    instruction: '面中更饱满协调，轻度淡化法令纹；保持自然光影与真实质感。',
-  },
-  jawline: {
-    label: '下颌缘/下巴',
-    instruction: '下颌线更清晰、下巴更立体但克制；保持原脸型与个人特征。',
-  },
-  forehead: {
-    label: '额头',
-    instruction: '额头更饱满平整但自然，不改变发际线与头发细节。',
+    label: '皮肤综合（更细腻但不磨皮）',
+    instruction: '肤质更细腻干净、瑕疵更少，但必须保留真实皮肤纹理与毛孔；禁止过度磨皮或塑料感。',
   },
 };
 
@@ -96,7 +96,7 @@ function buildPrompt(selectedKeys: string[]): string {
   return [
     '你是专业的人像美学修图导演。任务：在不改变身份的前提下，让照片里的同一个人自然变美。',
     '硬性要求：必须是同一个人；保持年龄/性别/肤色/发型/表情/角度/光线/背景不变；不要网红脸；不要过度磨皮。',
-    `需要重点优化的部位：${labels}。`,
+    `需要重点优化的项目类型：${labels}。`,
     instructions ? `具体要求：\n${instructions}` : '',
     '输出：写实手机摄影风格，真实质感，单张结果图。',
   ]

@@ -14,16 +14,16 @@ type Part = {
 };
 
 const PARTS: Part[] = [
-  { key: 'skin', label: '皮肤质感', desc: '痘印/瑕疵更干净，但保留真实纹理。' },
-  { key: 'eyes', label: '眼睛（神采）', desc: '眼神更有精神，克制自然。' },
-  { key: 'underEye', label: '眼袋/泪沟/黑眼圈', desc: '轻度改善，但不“熨平”成假皮肤。' },
-  { key: 'brows', label: '眉形/眉色', desc: '更利落协调，不要纹眉感。' },
-  { key: 'nose', label: '鼻子', desc: '更立体精致，但比例自然。' },
-  { key: 'lips', label: '嘴唇', desc: '唇形与唇色更好看，不夸张丰唇。' },
-  { key: 'teeth', label: '牙齿/笑容', desc: '可见才处理，轻度更干净不“烤瓷牙”。' },
-  { key: 'cheeks', label: '面颊/苹果肌', desc: '面中更协调，轻度淡法令纹。' },
-  { key: 'jawline', label: '下颌缘/下巴', desc: '下颌线更清晰，但不重塑脸型。' },
-  { key: 'forehead', label: '额头', desc: '更平整饱满，不动发际线。' },
+  { key: 'nose_synthesis', label: '鼻综合（鼻尖/鼻梁/鼻翼整体协调）', desc: '更立体、更精致，但比例自然不夸张。' },
+  { key: 'alar_reduction', label: '鼻翼缩小（鼻翼/鼻孔更精致）', desc: '鼻翼更收拢、鼻孔形态更秀气。' },
+  { key: 'eye_comprehensive', label: '双眼皮/眼综合（上睑更精神）', desc: '上眼睑形态更精神自然，不做夸张网红款。' },
+  { key: 'eye_bags', label: '去眼袋/泪沟改善（下睑年轻化）', desc: '改善眼袋/泪沟与疲惫感，但保留真实质感。' },
+  { key: 'midface_filler', label: '中面填充/法令纹改善（玻尿酸/脂肪取向）', desc: '面中更饱满协调，法令纹更淡但自然。' },
+  { key: 'botox', label: '瘦脸/除皱肉毒（下颌缘更干净、动态纹更淡）', desc: '轮廓更利落，表情自然不僵硬。' },
+  { key: 'contour_lift', label: '下颌缘清晰/轮廓提升（不改身份、不网红脸）', desc: '下颌缘更清晰，整体更紧致但克制。' },
+  { key: 'chin_aug', label: '隆下巴（更立体但克制）', desc: '下巴更精致、更协调，不做夸张兜翘。' },
+  { key: 'lip', label: '丰唇/唇形调整（自然，不夸张）', desc: '唇形更好看、唇色更自然，不做夸张丰唇。' },
+  { key: 'skin', label: '皮肤综合（更细腻但不磨皮）', desc: '肤质更干净、瑕疵更少，但保留毛孔纹理。' },
 ];
 
 async function fileToDataUrl(file: File): Promise<string> {
@@ -74,7 +74,7 @@ function uniq(arr: string[]): string[] {
 
 export default function FullfaceBeautifyPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [selectedParts, setSelectedParts] = useState<string[]>(['skin', 'eyes', 'underEye', 'jawline']);
+  const [selectedParts, setSelectedParts] = useState<string[]>(['skin', 'eye_comprehensive', 'eye_bags', 'contour_lift']);
   const [resolution, setResolution] = useState<Resolution>('1k');
 
   const [submitting, setSubmitting] = useState(false);
@@ -165,7 +165,7 @@ export default function FullfaceBeautifyPage() {
         </Link>
         <div className={styles.headerRight}>
           <div className={styles.title}>全脸变美</div>
-          <div className={styles.subTitle}>上传术前照 + 选择部位，一键生成更自然的术后美化图</div>
+          <div className={styles.subTitle}>上传术前照 + 选择项目类型，一键生成更自然的术后效果图</div>
         </div>
       </header>
 
@@ -204,7 +204,7 @@ export default function FullfaceBeautifyPage() {
 
           <section className={styles.card}>
             <div className={styles.cardTitle}>
-              <Sparkles size={16} /> 选择需要优化的部位（可多选）
+              <Sparkles size={16} /> 选择项目类型（可多选）
             </div>
 
             <div className={styles.partGrid}>
@@ -243,7 +243,7 @@ export default function FullfaceBeautifyPage() {
                 2K（15积分）
               </button>
               <div className={styles.hint}>
-                已选 {selectedCount} 项；本次预计消耗 {expectedCost} 积分
+                已选 {selectedCount} 项；本次预计消耗 {expectedCost} 积分（1K=10，2K=15）
               </div>
             </div>
 
