@@ -6,7 +6,7 @@ import { Check, Users, Zap, TrendingUp, Gift, MessageCircle, Star, ChevronRight 
 import styles from './partner.module.scss';
 
 const tools = [
-  { icon: '🔬', name: 'HealVision 100天康复历程', desc: '术后恢复可视化，术前患者沟通神器' },
+  { icon: '🔬', name: '变美恢复预览', desc: '术后恢复可视化，术前患者沟通神器' },
   { icon: '🎭', name: 'PreVSim 术前模拟助手', desc: 'AI生成术前术后对比图，提升成交率' },
   { icon: '⭐', name: 'My StarFace 明星脸', desc: '素人与明星融合，激发求美欲望' },
   { icon: '🎬', name: 'MicroMotion 肖像动态化', desc: '静态照片变动态视频，朋友圈爆款素材' },

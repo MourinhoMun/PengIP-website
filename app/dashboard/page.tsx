@@ -288,7 +288,7 @@ export default function DashboardPage() {
               </ul>
               <p>违反以上限制，可能触犯《广告法》第 58 条等条款，面临<strong>吊销执照、最高 100 万元以上罚款及刑事追责</strong>，本平台不承担任何连带责任。</p>
 
-              <h3>三、肖像权与隐私（StarFace / MotionX / 医患合影）</h3>
+              <h3>三、肖像权与隐私（StarFace / MotionX / 照片合拍生成器）</h3>
               <p>依据《中华人民共和国民法典》第四编人格权相关条款及《个人信息保护法》：</p>
               <ul>
                 <li>上传他人照片前，必须取得该人的<strong>明确书面授权</strong></li>
